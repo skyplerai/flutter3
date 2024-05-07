@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_export.dart';
-import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/appbar_title.dart';
 import '../../widgets/app_bar/appbar_trailing_image.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
@@ -13,11 +13,11 @@ class AnalyticsScreen extends StatelessWidget {
           key: key,
         );
 
-  List<String> dropdownItemList = ["Item One", "Item Two", "Item Three"];
+  List<String> dropdownItemList = ["9", "10", "11"];
 
-  List<String> dropdownItemList1 = ["Item One", "Item Two", "Item Three"];
+  List<String> dropdownItemList1 = ["May", "June", "July"];
 
-  List<String> dropdownItemList2 = ["Item One", "Item Two", "Item Three"];
+  List<String> dropdownItemList2 = ["2024", "2025", "2026"];
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,6 @@ class AnalyticsScreen extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: _buildColumn(context),
       ),
     );
   }
@@ -44,18 +43,6 @@ class AnalyticsScreen extends StatelessWidget {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       height: 69.v,
-      leadingWidth: 43.h,
-      leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgArrowLeft,
-        margin: EdgeInsets.only(
-          left: 28.h,
-          top: 14.v,
-          bottom: 15.v,
-        ),
-        onTap: () {
-          onTapArrowleftone(context);
-        },
-      ),
       centerTitle: true,
       title: AppbarTitle(
         text: "Analytics",
@@ -93,13 +80,18 @@ class AnalyticsScreen extends StatelessWidget {
             child: Row(
               children: [
                 CustomDropDown(
-                  width: 52.h,
+                  width: 65.h,
+                  hintText: "8",
                   items: dropdownItemList,
+                  contentPadding:
+                      EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
                   child: CustomDropDown(
                     width: 88.h,
+                    contentPadding:
+                        EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
                     icon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 13.h),
                       child: CustomImageView(
@@ -116,6 +108,8 @@ class AnalyticsScreen extends StatelessWidget {
                   padding: EdgeInsets.only(left: 9.h),
                   child: CustomDropDown(
                     width: 88.h,
+                    contentPadding:
+                        EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
                     icon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 13.h),
                       child: CustomImageView(

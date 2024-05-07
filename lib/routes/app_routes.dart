@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
+import 'package:sriram_s_application3/presentation/dashboard/dashboard.dart';
+
 import '../presentation/analytics_screen/analytics_screen.dart';
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/database_screen/database_screen.dart';
@@ -30,6 +31,6 @@ class AppRoutes {
     analyticsScreen: (context) => AnalyticsScreen(),
     notificationsScreen: (context) => NotificationsScreen(),
     appNavigationScreen: (context) => AppNavigationScreen(),
-    initialRoute: (context) => HomePageOneScreen()
+    initialRoute: (context) => DashBoardScreen()
   };
 }

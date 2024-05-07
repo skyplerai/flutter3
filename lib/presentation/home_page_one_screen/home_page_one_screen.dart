@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_export.dart';
-import '../../widgets/app_bar/appbar_image.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/appbar_subtitle.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
@@ -27,11 +27,25 @@ class HomePageOneScreen extends StatelessWidget {
             children: [
               _buildRowCctv(context),
               SizedBox(height: 13.v),
-              _buildColumnOne(
-                context,
-                connectCCTVText: "Connect CCTV",
-                camerasCounterText: "0 cameras",
-                tapToConnectText: "Tap to connect",
+              InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          actions: List.generate(
+                              2,
+                              (index) => ElevatedButton(
+                                  onPressed: () {}, child: Text("Submit"))),
+                        );
+                      });
+                },
+                child: _buildColumnOne(
+                  context,
+                  connectCCTVText: "Connect CCTV",
+                  camerasCounterText: "0 cameras",
+                  tapToConnectText: "Tap to connect",
+                ),
               ),
               SizedBox(height: 12.v),
               _buildColumnOne(
@@ -44,7 +58,7 @@ class HomePageOneScreen extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: _buildColumnTwo(context),
+        // bottomNavigationBar: _buildColumnTwo(context),
       ),
     );
   }
@@ -62,47 +76,34 @@ class HomePageOneScreen extends StatelessWidget {
         margin: EdgeInsets.only(left: 10.h),
       ),
       actions: [
-        GestureDetector(
+        InkWell(
           onTap: () {
-            onTapColumnuserone(context);
+            Navigator.pushNamed(context, AppRoutes.notificationsScreen);
           },
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 19.h,
-              vertical: 5.v,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 13.h,
-              vertical: 14.v,
-            ),
-            decoration: AppDecoration.outlineWhiteA.copyWith(
-              borderRadius: BorderRadiusStyle.roundedBorder27,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(height: 1.v),
-                AppbarImage(
-                  imagePath: ImageConstant.imgUser,
-                  margin: EdgeInsets.only(
-                    left: 3.h,
-                    right: 2.h,
-                  ),
+          radius: 25,
+          borderRadius: BorderRadius.circular(35),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 1,
                 ),
-                AppbarImage(
-                  imagePath: ImageConstant.imgClose,
-                  margin: EdgeInsets.only(left: 20.h),
+              ),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 30,
+                child: Icon(
+                  Icons.notifications_none,
+                  color: Colors.white,
+                  size: 35,
                 ),
-                SizedBox(height: 17.v),
-                AppbarImage(
-                  imagePath: ImageConstant.imgVector,
-                  margin: EdgeInsets.symmetric(horizontal: 12.h),
-                )
-              ],
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

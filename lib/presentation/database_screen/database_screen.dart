@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_export.dart';
 import '../../theme/custom_button_style.dart';
 import '../../widgets/custom_drop_down.dart';
@@ -13,13 +14,11 @@ class DatabaseScreen extends StatelessWidget {
           key: key,
         );
 
-  List<String> dropdownItemList = ["Item One", "Item Two", "Item Three"];
+  List<String> dropdownItemList = ["8", "9", "10"];
 
-  List<String> dropdownItemList1 = ["Item One", "Item Two", "Item Three"];
+  List<String> dropdownItemList1 = ["May", "June", "July"];
 
-  List<String> dropdownItemList2 = ["Item One", "Item Two", "Item Three"];
-
-  late TabController tabviewController;
+  List<String> dropdownItemList2 = ["2024", "2025", "2026"];
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +40,26 @@ class DatabaseScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           CustomDropDown(
-                            width: 52.h,
+                            width: 65.h,
+                            contentPadding: EdgeInsets.only(
+                                left: 15.h, top: 7.5.h, bottom: 7.5.h),
                             items: dropdownItemList,
+                            icon: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 13.h),
+                              child: CustomImageView(
+                                imagePath: ImageConstant.imgArrowdown,
+                                height: 3.v,
+                                width: 8.h,
+                              ),
+                            ),
+                            hintText: "8",
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 9.h),
                             child: CustomDropDown(
-                              width: 88.h,
+                              width: 110.h,
+                              contentPadding: EdgeInsets.only(
+                                  left: 15.h, top: 7.5.h, bottom: 7.5.h),
                               icon: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 13.h),
                                 child: CustomImageView(
@@ -64,6 +76,8 @@ class DatabaseScreen extends StatelessWidget {
                             padding: EdgeInsets.only(left: 9.h),
                             child: CustomDropDown(
                               width: 88.h,
+                              contentPadding: EdgeInsets.only(
+                                  left: 15.h, top: 7.5.h, bottom: 7.5.h),
                               icon: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 13.h),
                                 child: CustomImageView(
@@ -86,7 +100,13 @@ class DatabaseScreen extends StatelessWidget {
                   _buildViewHierarchy(context),
                   SizedBox(height: 24.v),
                   _buildRowSriram(context),
-                  _buildTabBarView(context)
+                  SizedBox(height: 27.v),
+                  _buildViewHierarchy(context),
+                  SizedBox(height: 24.v),
+                  _buildRowUnknownCount(context),
+                  SizedBox(height: 27.v),
+                  _buildViewHierarchy(context),
+                  // _buildTabBarView(context)
                 ],
               )
             ],
@@ -247,86 +267,86 @@ class DatabaseScreen extends StatelessWidget {
             ),
           ),
           Spacer(),
-          Container(
-            height: 29.v,
-            width: 169.h,
-            margin: EdgeInsets.only(top: 4.v),
-            child: TabBar(
-              controller: tabviewController,
-              labelPadding: EdgeInsets.zero,
-              labelColor: appTheme.whiteA700,
-              labelStyle: TextStyle(
-                fontSize: 12.fSize,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-              ),
-              unselectedLabelColor: appTheme.whiteA700,
-              unselectedLabelStyle: TextStyle(
-                fontSize: 12.fSize,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-              ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                color: appTheme.yellow900,
-                borderRadius: BorderRadius.circular(
-                  14.h,
-                ),
-              ),
-              tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomElevatedButton(
-                        width: 71.h,
-                        text: "Known",
-                        buttonStyle: CustomButtonStyles.fillYellow,
-                      ),
-                      CustomImageView(
-                        imagePath: ImageConstant.imgImage29x23,
-                        height: 29.v,
-                        width: 23.h,
-                        margin: EdgeInsets.only(left: 2.h),
-                      )
-                    ],
-                  ),
-                ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomImageView(
-                        imagePath: ImageConstant.imgImage29x23,
-                        height: 29.v,
-                        width: 23.h,
-                      ),
-                      CustomElevatedButton(
-                        width: 71.h,
-                        text: "Unknown",
-                        margin: EdgeInsets.only(left: 2.h),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )
+          // Container(
+          //   height: 29.v,
+          //   width: 169.h,
+          //   margin: EdgeInsets.only(top: 4.v),
+          //   child: TabBar(
+          //     controller: tabviewController,
+          //     labelPadding: EdgeInsets.zero,
+          //     labelColor: appTheme.whiteA700,
+          //     labelStyle: TextStyle(
+          //       fontSize: 12.fSize,
+          //       fontFamily: 'Poppins',
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //     unselectedLabelColor: appTheme.whiteA700,
+          //     unselectedLabelStyle: TextStyle(
+          //       fontSize: 12.fSize,
+          //       fontFamily: 'Poppins',
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //     indicatorSize: TabBarIndicatorSize.tab,
+          //     indicator: BoxDecoration(
+          //       color: appTheme.yellow900,
+          //       borderRadius: BorderRadius.circular(
+          //         14.h,
+          //       ),
+          //     ),
+          //     tabs: [
+          //       Tab(
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             CustomElevatedButton(
+          //               width: 71.h,
+          //               text: "Known",
+          //               buttonStyle: CustomButtonStyles.fillYellow,
+          //             ),
+          //             CustomImageView(
+          //               imagePath: ImageConstant.imgImage29x23,
+          //               height: 29.v,
+          //               width: 23.h,
+          //               margin: EdgeInsets.only(left: 2.h),
+          //             )
+          //           ],
+          //         ),
+          //       ),
+          //       Tab(
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             CustomImageView(
+          //               imagePath: ImageConstant.imgImage29x23,
+          //               height: 29.v,
+          //               width: 23.h,
+          //             ),
+          //             CustomElevatedButton(
+          //               width: 71.h,
+          //               text: "Unknown",
+          //               margin: EdgeInsets.only(left: 2.h),
+          //             )
+          //           ],
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildTabBarView(BuildContext context) {
-    return SizedBox(
-      height: 462.v,
-      child: TabBarView(
-        controller: tabviewController,
-        children: [Container(), Container()],
-      ),
-    );
-  }
+  // Widget _buildTabBarView(BuildContext context) {
+  //   return SizedBox(
+  //     height: 462.v,
+  //     child: TabBarView(
+  //       controller: tabviewController,
+  //       children: [Container(), Container()],
+  //     ),
+  //   );
+  // }
 
   /// Navigates to the notificationsScreen when the action is triggered.
   onTapBtnIconbutton(BuildContext context) {
