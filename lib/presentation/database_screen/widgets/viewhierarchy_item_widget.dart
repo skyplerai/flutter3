@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/app_export.dart'; // ignore: must_be_immutable
 
 class ViewhierarchyItemWidget extends StatelessWidget {
@@ -14,15 +15,15 @@ class ViewhierarchyItemWidget extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: SizedBox(
-          height: 137.v,
-          width: 106.h,
+          height: 110.v,
+          width: 95.h,
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
               CustomImageView(
                 imagePath: ImageConstant.imgImage,
-                height: 99.v,
-                width: 106.h,
+                height: 80.v,
+                width: 90.h,
                 alignment: Alignment.topCenter,
               ),
               Align(
@@ -44,7 +45,7 @@ class ViewhierarchyItemWidget extends StatelessWidget {
                       ),
                       Text(
                         "1:25 PM",
-                        style: theme.textTheme.titleMedium,
+                        style: theme.textTheme.titleSmall,
                       )
                     ],
                   ),

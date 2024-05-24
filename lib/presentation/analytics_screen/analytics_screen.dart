@@ -13,9 +13,23 @@ class AnalyticsScreen extends StatelessWidget {
           key: key,
         );
 
-  List<String> dropdownItemList = ["9", "10", "11"];
+  List<String> dropdownItemList =
+      List<String>.generate(31, (index) => (index + 1).toString());
 
-  List<String> dropdownItemList1 = ["May", "June", "July"];
+  List<String> dropdownItemList1 = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
 
   List<String> dropdownItemList2 = ["2024", "2025", "2026"];
 
@@ -80,8 +94,10 @@ class AnalyticsScreen extends StatelessWidget {
             child: Row(
               children: [
                 CustomDropDown(
-                  width: 65.h,
+                  width: 70.h,
                   hintText: "8",
+                  hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                  textStyle: TextStyle(fontSize: 14, color: Colors.black),
                   items: dropdownItemList,
                   contentPadding:
                       EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
@@ -89,9 +105,11 @@ class AnalyticsScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
                   child: CustomDropDown(
-                    width: 88.h,
+                    width: 150.h,
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                    textStyle: TextStyle(fontSize: 14, color: Colors.black),
                     contentPadding:
-                        EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
+                        EdgeInsets.only(left: 10.h, top: 7.5.h, bottom: 7.5.h),
                     icon: Container(
                       margin: EdgeInsets.symmetric(horizontal: 13.h),
                       child: CustomImageView(
@@ -107,7 +125,9 @@ class AnalyticsScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
                   child: CustomDropDown(
-                    width: 88.h,
+                    width: 90.h,
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                    textStyle: TextStyle(fontSize: 14, color: Colors.black),
                     contentPadding:
                         EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
                     icon: Container(
@@ -129,13 +149,17 @@ class AnalyticsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 214.adaptSize,
-                width: 214.adaptSize,
-                child: CircularProgressIndicator(
-                  value: 0.5,
-                  backgroundColor: appTheme.yellow90002,
-                  color: appTheme.red600,
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: SizedBox(
+                  height: 150.adaptSize,
+                  width: 150.adaptSize,
+                  child: CircularProgressIndicator(
+                    value: 0.4,
+                    strokeWidth: 55,
+                    backgroundColor: appTheme.yellow90002,
+                    color: appTheme.red600,
+                  ),
                 ),
               ),
               Padding(
@@ -186,12 +210,12 @@ class AnalyticsScreen extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: EdgeInsets.only(left: 35.h),
+              padding: EdgeInsets.only(left: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: 109.h,
+                    width: 125.h,
                     child: Text(
                       "Number of People  Entered",
                       maxLines: 2,
@@ -203,22 +227,24 @@ class AnalyticsScreen extends StatelessWidget {
                     flex: 63,
                   ),
                   SizedBox(
-                    width: 69.h,
+                    width: 75.h,
                     child: Text(
-                      "Unknown \n   People",
+                      "Unknown People",
                       maxLines: 2,
+                      textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: CustomTextStyles.titleSmallYellow90001,
                     ),
                   ),
                   Spacer(
-                    flex: 36,
+                    flex: 18,
                   ),
                   SizedBox(
-                    width: 51.h,
+                    width: 70.h,
                     child: Text(
                       "Known \nPeople ",
                       maxLines: 2,
+                      textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: CustomTextStyles.titleSmallRed600,
                     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
-import 'widgets/notifications_item_widget.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({Key? key})
@@ -48,7 +48,29 @@ class NotificationsScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 13.v),
-              _buildNotifications(context)
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        "Unknown 101 detected.",
+                        style: theme.textTheme.titleSmall,
+                      ),
+                      subtitle: Text(
+                        "Detected in Living room at 10:30 am, view in database.",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      leading: CircleAvatar(
+                        radius: 39.h,
+                        child: Image.asset(ImageConstant.imgImage85x89),
+                      ),
+                    );
+                  },
+                ),
+              )
             ],
           ),
         ),
@@ -65,35 +87,9 @@ class NotificationsScreen extends StatelessWidget {
         imagePath: ImageConstant.imgArrowLeft,
         margin: EdgeInsets.fromLTRB(29.h, 16.v, 387.h, 17.v),
         onTap: () {
-          onTapArrowleftone(context);
+          Navigator.pop(context);
         },
       ),
     );
-  }
-
-  /// Section Widget
-  Widget _buildNotifications(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 12.h),
-      child: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 86.v,
-          crossAxisCount: 3,
-          mainAxisSpacing: 9.h,
-          crossAxisSpacing: 9.h,
-        ),
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 13,
-        itemBuilder: (context, index) {
-          return NotificationsItemWidget();
-        },
-      ),
-    );
-  }
-
-  /// Navigates back to the previous screen.
-  onTapArrowleftone(BuildContext context) {
-    Navigator.pop(context);
   }
 }

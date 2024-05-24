@@ -14,9 +14,23 @@ class DatabaseScreen extends StatelessWidget {
           key: key,
         );
 
-  List<String> dropdownItemList = ["8", "9", "10"];
+  List<String> dropdownItemList =
+      List<String>.generate(31, (index) => (index + 1).toString());
 
-  List<String> dropdownItemList1 = ["May", "June", "July"];
+  List<String> dropdownItemList1 = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
 
   List<String> dropdownItemList2 = ["2024", "2025", "2026"];
 
@@ -40,7 +54,11 @@ class DatabaseScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           CustomDropDown(
-                            width: 65.h,
+                            width: 70.h,
+                            hintStyle:
+                                TextStyle(fontSize: 13, color: Colors.black),
+                            textStyle:
+                                TextStyle(fontSize: 14, color: Colors.black),
                             contentPadding: EdgeInsets.only(
                                 left: 15.h, top: 7.5.h, bottom: 7.5.h),
                             items: dropdownItemList,
@@ -57,9 +75,13 @@ class DatabaseScreen extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(left: 9.h),
                             child: CustomDropDown(
-                              width: 110.h,
+                              width: 140.h,
+                              hintStyle:
+                                  TextStyle(fontSize: 13, color: Colors.black),
+                              textStyle:
+                                  TextStyle(fontSize: 14, color: Colors.black),
                               contentPadding: EdgeInsets.only(
-                                  left: 15.h, top: 7.5.h, bottom: 7.5.h),
+                                  left: 10.h, top: 7.5.h, bottom: 7.5.h),
                               icon: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 13.h),
                                 child: CustomImageView(
@@ -75,7 +97,11 @@ class DatabaseScreen extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(left: 9.h),
                             child: CustomDropDown(
-                              width: 88.h,
+                              width: 95.h,
+                              hintStyle:
+                                  TextStyle(fontSize: 13, color: Colors.black),
+                              textStyle:
+                                  TextStyle(fontSize: 14, color: Colors.black),
                               contentPadding: EdgeInsets.only(
                                   left: 15.h, top: 7.5.h, bottom: 7.5.h),
                               icon: Container(
@@ -140,8 +166,10 @@ class DatabaseScreen extends StatelessWidget {
             onTap: () {
               onTapBtnIconbutton(context);
             },
-            child: CustomImageView(
-              imagePath: ImageConstant.imgGroup3,
+            child: Icon(
+              Icons.notifications_none,
+              color: Colors.white,
+              size: 40,
             ),
           )
         ],
@@ -188,12 +216,12 @@ class DatabaseScreen extends StatelessWidget {
         children: [
           Text(
             "Unknown 101",
-            style: CustomTextStyles.titleLarge23,
+            style: CustomTextStyles.titleMediumSemiBold17,
           ),
           CustomImageView(
             imagePath: ImageConstant.imgImage20x20,
-            height: 20.adaptSize,
-            width: 20.adaptSize,
+            height: 15.adaptSize,
+            width: 15.adaptSize,
             margin: EdgeInsets.only(
               left: 10.h,
               top: 8.v,
@@ -204,7 +232,7 @@ class DatabaseScreen extends StatelessWidget {
           _buildKnown(context),
           CustomImageView(
             imagePath: ImageConstant.imgImage29x23,
-            height: 29.v,
+            height: 20.v,
             width: 23.h,
             margin: EdgeInsets.only(
               left: 2.h,
@@ -223,16 +251,16 @@ class DatabaseScreen extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: SizedBox(
-        height: 137.v,
+        height: 110.v,
         child: ListView.separated(
-          padding: EdgeInsets.only(left: 29.h),
+          padding: EdgeInsets.only(left: 15.h),
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, index) {
             return SizedBox(
-              width: 14.h,
+              width: 0.h,
             );
           },
-          itemCount: 4,
+          itemCount: 7,
           itemBuilder: (context, index) {
             return ViewhierarchyItemWidget();
           },
@@ -254,12 +282,12 @@ class DatabaseScreen extends StatelessWidget {
         children: [
           Text(
             "Sriram",
-            style: CustomTextStyles.titleLarge23,
+            style: CustomTextStyles.titleMediumSemiBold17,
           ),
           CustomImageView(
             imagePath: ImageConstant.imgImage20x20,
-            height: 20.adaptSize,
-            width: 20.adaptSize,
+            height: 15.adaptSize,
+            width: 15.adaptSize,
             margin: EdgeInsets.only(
               left: 8.h,
               top: 8.v,
@@ -332,21 +360,22 @@ class DatabaseScreen extends StatelessWidget {
           //     ],
           //   ),
           // )
+          _buildKnown(context),
+          CustomImageView(
+            imagePath: ImageConstant.imgImage29x23,
+            height: 20.v,
+            width: 23.h,
+            margin: EdgeInsets.only(
+              left: 2.h,
+              top: 3.v,
+              bottom: 2.v,
+            ),
+          ),
+          _buildUnknown(context)
         ],
       ),
     );
   }
-
-  /// Section Widget
-  // Widget _buildTabBarView(BuildContext context) {
-  //   return SizedBox(
-  //     height: 462.v,
-  //     child: TabBarView(
-  //       controller: tabviewController,
-  //       children: [Container(), Container()],
-  //     ),
-  //   );
-  // }
 
   /// Navigates to the notificationsScreen when the action is triggered.
   onTapBtnIconbutton(BuildContext context) {

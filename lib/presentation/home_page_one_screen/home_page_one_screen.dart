@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sriram_s_application3/presentation/ddns_screen/ddns_screen.dart';
+import 'package:sriram_s_application3/presentation/static_screen/static_screen.dart';
 
+import '../../constants/style.dart';
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/appbar_subtitle.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
+import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_icon_button.dart';
 
 class HomePageOneScreen extends StatelessWidget {
@@ -23,42 +27,113 @@ class HomePageOneScreen extends StatelessWidget {
             horizontal: 23.h,
             vertical: 14.v,
           ),
-          child: Column(
-            children: [
-              _buildRowCctv(context),
-              SizedBox(height: 13.v),
-              InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          actions: List.generate(
-                              2,
-                              (index) => ElevatedButton(
-                                  onPressed: () {}, child: Text("Submit"))),
-                        );
-                      });
-                },
-                child: _buildColumnOne(
-                  context,
-                  connectCCTVText: "Connect CCTV",
-                  camerasCounterText: "0 cameras",
-                  tapToConnectText: "Tap to connect",
-                ),
-              ),
-              SizedBox(height: 12.v),
-              _buildColumnOne(
-                context,
-                connectCCTVText: "Connect CCTV",
-                camerasCounterText: "0 cameras",
-                tapToConnectText: "Tap to connect",
-              ),
-              SizedBox(height: 6.v)
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: List.generate(5, (index) {
+                return Column(
+                  children: [
+                    index == 0 ? _buildRowCctv(context) : SizedBox(),
+                    SizedBox(height: 13.v),
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.black,
+                                title: Center(
+                                  child: Text(
+                                    "Connect CCTV",
+                                    style: theme.textTheme.headlineSmall,
+                                  ),
+                                ),
+                                content: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.black,
+                                                  content: StaticScreen(),
+                                                );
+                                              });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: mainColor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Static",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white),
+                                          ),
+                                        )),
+                                    SizedBox(
+                                      width: 25.v,
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.black,
+                                                  content: DdnsScreen(),
+                                                );
+                                              });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: mainColor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "DDNS",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white),
+                                          ),
+                                        )),
+                                  ],
+                                ),
+                              );
+                            });
+                      },
+                      child: _buildColumnOne(
+                        context,
+                        connectCCTVText: "Connect CCTV",
+                        camerasCounterText: "0 cameras",
+                        tapToConnectText: "Tap to connect",
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
         // bottomNavigationBar: _buildColumnTwo(context),
+      ),
+    );
+  }
+
+  Widget _buildConnectButton(BuildContext context, {required String title}) {
+    return CustomElevatedButton(
+      height: 45.v,
+      width: 129.h,
+      text: title,
+      buttonTextStyle: TextStyle(fontSize: 20, color: Colors.white),
+      buttonStyle: ElevatedButton.styleFrom(backgroundColor: mainColor),
+      margin: EdgeInsets.only(
+        left: 80.h,
+        right: 80.h,
+        bottom: 22.v,
       ),
     );
   }
@@ -120,7 +195,7 @@ class HomePageOneScreen extends StatelessWidget {
         children: [
           Text(
             "CCTV",
-            style: theme.textTheme.headlineSmall,
+            style: theme.textTheme.titleLarge,
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -129,30 +204,10 @@ class HomePageOneScreen extends StatelessWidget {
             ),
             child: Text(
               "Credit : 7 days",
-              style: theme.textTheme.titleLarge,
+              style: theme.textTheme.titleMedium,
             ),
           )
         ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildColumnTwo(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: 28.h,
-        right: 28.h,
-        bottom: 7.v,
-      ),
-      decoration: AppDecoration.fillGray,
-      child: CustomImageView(
-        imagePath: ImageConstant.imgGroup,
-        height: 50.v,
-        width: 374.h,
-        onTap: () {
-          onTapImgImagefourteen(context);
-        },
       ),
     );
   }
@@ -184,7 +239,7 @@ class HomePageOneScreen extends StatelessWidget {
                 children: [
                   Text(
                     connectCCTVText,
-                    style: theme.textTheme.titleLarge!.copyWith(
+                    style: theme.textTheme.titleSmall!.copyWith(
                       color: appTheme.whiteA700,
                     ),
                   ),
@@ -192,13 +247,13 @@ class HomePageOneScreen extends StatelessWidget {
                     children: [
                       CustomImageView(
                         imagePath: ImageConstant.imgImage16x13,
-                        height: 16.v,
-                        width: 13.h,
+                        height: 10.v,
+                        width: 10.h,
                         margin: EdgeInsets.symmetric(vertical: 1.v),
                       ),
                       Text(
                         camerasCounterText,
-                        style: theme.textTheme.bodyMedium!.copyWith(
+                        style: theme.textTheme.bodySmall!.copyWith(
                           color: appTheme.whiteA700,
                         ),
                       )
@@ -208,8 +263,8 @@ class HomePageOneScreen extends StatelessWidget {
               ),
               CustomImageView(
                 imagePath: ImageConstant.imgImage20x20,
-                height: 20.adaptSize,
-                width: 20.adaptSize,
+                height: 15.adaptSize,
+                width: 15.adaptSize,
                 margin: EdgeInsets.only(
                   left: 4.h,
                   top: 4.v,

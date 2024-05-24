@@ -1,9 +1,12 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../core/app_export.dart';
 
 String _appTheme = "lightCode";
+
 LightCodeColors get appTheme => ThemeHelper().themeColor();
+
 ThemeData get theme => ThemeHelper().themeData();
 
 /// Helper class for managing themes and colors.
@@ -38,6 +41,22 @@ class ThemeHelper {
     return ThemeData(
       visualDensity: VisualDensity.standard,
       colorScheme: colorScheme,
+      fontFamily: 'poppins',
+      primarySwatch: Colors.orange,
+      useMaterial3: true,
+      primaryTextTheme: TextTheme(
+          displaySmall: GoogleFonts.poppins(),
+          displayMedium: GoogleFonts.poppins(),
+          displayLarge: GoogleFonts.poppins(),
+          headlineLarge: GoogleFonts.poppins(),
+          headlineSmall: GoogleFonts.poppins(),
+          headlineMedium: GoogleFonts.poppins(),
+          titleLarge: GoogleFonts.poppins(),
+          titleMedium: GoogleFonts.poppins(),
+          titleSmall: GoogleFonts.poppins(),
+          labelSmall: GoogleFonts.poppins(),
+          labelMedium: GoogleFonts.poppins(),
+          labelLarge: GoogleFonts.poppins()),
       textTheme: TextThemes.textTheme(colorScheme),
       scaffoldBackgroundColor: appTheme.gray900,
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -126,19 +145,29 @@ class ColorSchemes {
 class LightCodeColors {
   // Black
   Color get black900 => Color(0XFF000000);
+
 // BlueGray
   Color get blueGray400 => Color(0XFF888888);
+
   Color get blueGray900 => Color(0XFF2D2C2C);
+
 // Gray
   Color get gray600 => Color(0XFF737070);
+
   Color get gray700 => Color(0XFF686767);
+
   Color get gray900 => Color(0XFF1E1E1E);
+
 // Red
   Color get red600 => Color(0XFFE63946);
+
 // White
   Color get whiteA700 => Color(0XFFFFFFFF);
+
 // Yellow
   Color get yellow900 => Color(0XFFE69023);
+
   Color get yellow90001 => Color(0XFFE48914);
+
   Color get yellow90002 => Color(0XFFE48813);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sriram_s_application3/presentation/analytics_screen/analytics_screen.dart';
 import 'package:sriram_s_application3/presentation/database_screen/database_screen.dart';
 import 'package:sriram_s_application3/presentation/home_page_one_screen/home_page_one_screen.dart';
+import 'package:sriram_s_application3/presentation/settings_screen/settings_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
   DashBoardScreen();
@@ -17,7 +18,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     HomePageOneScreen(),
     AnalyticsScreen(),
     DatabaseScreen(),
-    AnalyticsScreen(),
+    SettingsScreen(),
   ];
 
   @override
