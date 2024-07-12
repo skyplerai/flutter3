@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sriram_s_application3/presentation/authentication/verify_email/verify_email.dart';
 import 'package:sriram_s_application3/presentation/dashboard/dashboard.dart';
 
 import '../constants/connect_cctv_screen.dart';
 import '../presentation/analytics_screen/analytics_screen.dart';
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
-import '../presentation/create_account_screen/create_account_screen.dart';
+import '../presentation/authentication/auth_wrapper/auth_wrapper.dart';
+import '../presentation/authentication/create_account_screen/create_account_screen.dart';
+import '../presentation/authentication/forgot_password/forgot_password.dart';
+import '../presentation/authentication/login_screen/login_screen.dart';
 import '../presentation/database_screen/database_screen.dart';
 import '../presentation/ddns_screen/ddns_screen.dart';
 import '../presentation/documentation_screen/documentation_screen.dart';
@@ -14,11 +18,9 @@ import '../presentation/help_support/help_support.dart';
 import '../presentation/home_page_one_screen/home_page_one_screen.dart';
 import '../presentation/home_page_two_screen/home_page_two_screen.dart';
 import '../presentation/ip_address_screen/ip_address_screen.dart';
-import '../presentation/login_screen/login_screen.dart';
 import '../presentation/notifications_screen/notifications_screen.dart';
 import '../presentation/pricing_screen/pricing_screen.dart';
 import '../presentation/settings_screen/settings_screen.dart';
-import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/static_screen/static_screen.dart'; // ignore_for_file: must_be_immutable
 
 // ignore_for_file: must_be_immutable
@@ -52,11 +54,13 @@ class AppRoutes {
   static const String pricingScreen = '/pricing_screen';
 
   static const String ipAddressScreen = '/ip_address_screen';
-
+  static const String verifyEmail = '/verifyEmail';
   static const String documentationScreen = '/documentation_screen';
   static const String faqScreen = '/faqScreen';
   static const String helpAndSupport = '/helpAndSupport';
   static const String dashboardScreen = '/dashboard_screen';
+  static const String authWrapperScreen = '/authWrapper';
+  static const String forgotPassword = '/forgotPassword';
 
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => LoginScreen(),
@@ -77,8 +81,11 @@ class AppRoutes {
     appNavigationScreen: (context) => AppNavigationScreen(),
     dashboardScreen: (context) => DashBoardScreen(),
     // initialRoute: (context) => SplashScreen(),
-    initialRoute: (context) => LoginScreen(),
+    // initialRoute: (context) => LoginScreen(),
     faqScreen: (context) => FAQScreen(),
-    helpAndSupport: (context) => HelpAndSupportScreen()
+    helpAndSupport: (context) => HelpAndSupportScreen(),
+    authWrapperScreen: (context) => AuthWrapper(),
+    forgotPassword: (context) => ForgotPasswordScreen(),
+    verifyEmail: (context) => VerifyEmailScreen()
   };
 }

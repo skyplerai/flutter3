@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_image.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/appbar_subtitle.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
+import '../../widgets/video_player/video_player.dart';
 
 class HomePageTwoScreen extends StatelessWidget {
   const HomePageTwoScreen({Key? key})
@@ -26,11 +28,12 @@ class HomePageTwoScreen extends StatelessWidget {
             children: [
               _buildRowCctv(context),
               SizedBox(height: 13.v),
-              _buildColumnOne(
-                context,
-                connectCCTVText: "Connect CCTV",
-                camerasCounterText: "0 cameras",
-                imageThirteen: ImageConstant.imgImage213x357,
+              Container(
+                height: 500.adaptSize,
+                width: 500.adaptSize,
+                child: RTSPVideoPlayer(
+                  rtspUrl: "",
+                ),
               ),
               SizedBox(height: 12.v),
               _buildColumnOne(

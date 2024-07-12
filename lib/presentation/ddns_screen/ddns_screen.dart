@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sriram_s_application3/constants/style.dart';
 
+import '../../Services/api_service.dart';
+import '../../constants/snack_bar.dart';
+import '../../constants/stream_urls.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
@@ -111,12 +117,32 @@ class DdnsScreen extends StatelessWidget {
     );
   }
 
+  ApiService apiService = ApiService();
+  final streamUrlController = Get.put(StreamUrlController());
+
   /// Section Widget
   Widget _buildConnectButton(BuildContext context) {
     return CustomElevatedButton(
       height: 45.v,
       width: 129.h,
       text: "Connect",
+      onPressed: () async {
+        final response = await apiService.addDDNSCamera(
+            password: passwordController.text,
+            ipAddress: hostnameController.text,
+            username: usernameController.text);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final streamUrl = await apiService.getStreamUrl("ddns");
+          print("streamUrl ${streamUrl}");
+          streamUrlController.streamUrls.add(streamUrl);
+          showSnackBar(jsonDecode(response.body)['message'], context);
+          streamUrlController.getAllTheUrls();
+          Navigator.pop(context);
+        } else {
+          showSnackBar("Something went wrong.", context);
+          Navigator.pop(context);
+        }
+      },
       buttonTextStyle: TextStyle(fontSize: 20, color: Colors.white),
       buttonStyle: ElevatedButton.styleFrom(backgroundColor: mainColor),
       margin: EdgeInsets.only(

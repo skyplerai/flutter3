@@ -1,5 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sriram_s_application3/Services/api_service.dart';
+import 'package:sriram_s_application3/constants/snack_bar.dart';
+
+import '../../constants/stream_urls.dart';
 import '../../constants/style.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -17,6 +23,7 @@ class StaticScreen extends StatelessWidget {
   TextEditingController passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +88,7 @@ class StaticScreen extends StatelessWidget {
               ),
             ),
             prefixConstraints: BoxConstraints(maxHeight: 53.v),
-            obscureText: true,
+            obscureText: false,
             contentPadding: EdgeInsets.only(top: 0.v),
           ),
           SizedBox(height: 10.v),
@@ -117,6 +124,8 @@ class StaticScreen extends StatelessWidget {
     );
   }
 
+  final streamUrlController = Get.put(StreamUrlController());
+
   /// Section Widget
   Widget _buildConnectButton(BuildContext context) {
     return CustomElevatedButton(
@@ -130,6 +139,21 @@ class StaticScreen extends StatelessWidget {
         right: 80.h,
         bottom: 22.v,
       ),
+      onPressed: () async {
+        final response = await apiService.addStaticCamera(
+            password: passwordController.text,
+            ipAddress: ipnetworkvalueController.text,
+            username: usernameController.text);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final streamUrl = await apiService.getStreamUrl("static");
+          streamUrlController.streamUrls.add(streamUrl);
+          showSnackBar(jsonDecode(response.body)['message'], context);
+          Navigator.pop(context);
+        } else {
+          showSnackBar("Something went wrong.", context);
+          Navigator.pop(context);
+        }
+      },
     );
   }
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sriram_s_application3/Services/shared_services.dart';
+import 'package:sriram_s_application3/constants/stream_urls.dart';
 import 'package:sriram_s_application3/presentation/ddns_screen/ddns_screen.dart';
 import 'package:sriram_s_application3/presentation/static_screen/static_screen.dart';
 
@@ -9,117 +12,188 @@ import '../../widgets/app_bar/appbar_subtitle.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_icon_button.dart';
+import '../../widgets/video_player/video_player.dart';
 
 class HomePageOneScreen extends StatelessWidget {
-  const HomePageOneScreen({Key? key})
+  HomePageOneScreen({Key? key})
       : super(
           key: key,
         );
 
+  int? selectedIndex;
+  final streamUrlController = Get.put(StreamUrlController());
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: _buildAppBar(context),
-        body: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.symmetric(
-            horizontal: 23.h,
-            vertical: 14.v,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(5, (index) {
-                return Column(
-                  children: [
-                    index == 0 ? _buildRowCctv(context) : SizedBox(),
-                    SizedBox(height: 13.v),
-                    InkWell(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                backgroundColor: Colors.black,
-                                title: Center(
-                                  child: Text(
-                                    "Connect CCTV",
-                                    style: theme.textTheme.headlineSmall,
-                                  ),
-                                ),
-                                content: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  backgroundColor: Colors.black,
-                                                  content: StaticScreen(),
-                                                );
-                                              });
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: mainColor),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Static",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.white),
-                                          ),
-                                        )),
-                                    SizedBox(
-                                      width: 25.v,
+    // final setStream = streamUrlController.streamUrls.toSet();
+    // streamUrlController.streamUrls.addAll(setStream);
+    return WillPopScope(
+      onWillPop: () async {
+        return await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                  content: const Text('Do you want to exit the app?'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('Yes')),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('No'))
+                  ]);
+            });
+      },
+      child: GetBuilder<StreamUrlController>(
+          init: StreamUrlController(),
+          builder: (controller) {
+            return SafeArea(
+              child: Scaffold(
+                appBar: _buildAppBar(context),
+                body: Container(
+                  width: double.maxFinite,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 23.h,
+                    vertical: 14.v,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Obx(() {
+                          return Column(
+                            children: List.generate(
+                                streamUrlController.streamUrls.length, (index) {
+                              return Column(
+                                children: [
+                                  index == 0
+                                      ? _buildRowCctv(context)
+                                      : SizedBox(),
+                                  SizedBox(height: 13.v),
+                                  Container(
+                                    height: 300.adaptSize,
+                                    width: 500.adaptSize,
+                                    padding: EdgeInsets.all(10.v),
+                                    decoration: BoxDecoration(
+                                        color: Color.fromRGBO(46, 45, 45, 1),
+                                        borderRadius:
+                                            BorderRadius.circular(20.v)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.v),
+                                      child: Obx(() {
+                                        return RTSPVideoPlayer(
+                                          rtspUrl: streamUrlController
+                                              .streamUrls[index],
+                                        );
+                                      }),
                                     ),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  backgroundColor: Colors.black,
-                                                  content: DdnsScreen(),
-                                                );
-                                              });
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: mainColor),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "DDNS",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.white),
-                                          ),
-                                        )),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               );
-                            });
-                      },
-                      child: _buildColumnOne(
-                        context,
-                        connectCCTVText: "Connect CCTV",
-                        camerasCounterText: "0 cameras",
-                        tapToConnectText: "Tap to connect",
-                      ),
+                            }),
+                          );
+                        }),
+                        SizedBox(
+                          height: 10.v,
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadiusStyle.roundedBorder18,
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.black,
+                                    title: Center(
+                                      child: Text(
+                                        "Connect CCTV",
+                                        style: theme.textTheme.headlineSmall,
+                                      ),
+                                    ),
+                                    content: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      content: StaticScreen(),
+                                                    );
+                                                  });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: mainColor),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Static",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                        SizedBox(
+                                          width: 25.v,
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      content: DdnsScreen(),
+                                                    );
+                                                  });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: mainColor),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "DDNS",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                            )),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          child: Obx(() {
+                            return _buildColumnOne(
+                              context,
+                              connectCCTVText: "Connect CCTV",
+                              camerasCounterText:
+                                  "${streamUrlController.streamUrls.length} cameras",
+                              tapToConnectText: "Tap to connect",
+                            );
+                          }),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              }),
-            ),
-          ),
-        ),
-        // bottomNavigationBar: _buildColumnTwo(context),
-      ),
+                  ),
+                ),
+                // bottomNavigationBar: _buildColumnTwo(context),
+              ),
+            );
+          }),
     );
   }
 
@@ -147,7 +221,8 @@ class HomePageOneScreen extends StatelessWidget {
         margin: EdgeInsets.only(left: 19.h),
       ),
       title: AppbarSubtitle(
-        text: "Mythiresh",
+        text:
+            "${UserSharedServices.loginDetails()!.userInfo!.username.toString()}",
         margin: EdgeInsets.only(left: 10.h),
       ),
       actions: [
@@ -211,6 +286,8 @@ class HomePageOneScreen extends StatelessWidget {
       ),
     );
   }
+
+  bool isVideoConnected = false;
 
   /// Common widget
   Widget _buildColumnOne(

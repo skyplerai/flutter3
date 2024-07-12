@@ -9,12 +9,22 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cached_network_image: ^3.3.0
+  flutter_screenutil:
+  pinput:
+  get:
   flutter_svg: ^2.0.9
   flutter_svg_provider: ^1.0.7
   intl: ^0.18.0
   google_fonts:
   connectivity_plus: ^5.0.2
   flutter_native_splash:
+  web_socket_channel:
+  provider:
+  shared_preferences:
+  flutter_secure_storage:
+  http:
+  flutter_vlc_player:
+  google_sign_in:
 
 dev_dependencies:
   flutter_test:

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:sriram_s_application3/presentation/create_account_screen/create_account_screen.dart';
+import 'package:sriram_s_application3/Services/api_service.dart';
+import 'package:sriram_s_application3/core/app_export.dart';
 
-import '../../constants/style.dart';
-import '../../core/app_export.dart';
-import '../../widgets/custom_outlined_button.dart';
-import '../../widgets/custom_text_form_field.dart';
+import '../../../constants/style.dart';
+import '../../../widgets/custom_outlined_button.dart';
+import '../../../widgets/custom_text_form_field.dart';
 
 // ignore_for_file: must_be_immutable
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key})
+class CreateAccountScreen extends StatelessWidget {
+  CreateAccountScreen({Key? key})
       : super(
           key: key,
         );
 
-  TextEditingController emailSectionController = TextEditingController();
+  TextEditingController nameEditTextController = TextEditingController();
 
-  TextEditingController passwordSectionController = TextEditingController();
+  TextEditingController emailEditTextController = TextEditingController();
+
+  TextEditingController passwordEditTextController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -45,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                             bottom: 80,
                             left: 275,
                             child: Text(
-                              "Welcome\nBack",
+                              "Create\nAccount",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 40,
@@ -53,35 +55,36 @@ class LoginScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          // Positioned(
-                          //     top: 375,
-                          //     left: 230,
-                          //     child: IconButton(
-                          //         onPressed: () {
-                          //           Navigator.pop(context);
-                          //         },
-                          //         icon: Icon(
-                          //           Icons.arrow_back_ios,
-                          //           color: Colors.white,
-                          //           size: 40,
-                          //         )))
+                          Positioned(
+                              top: 375,
+                              left: 230,
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                    size: 40,
+                                  )))
                         ],
                       ),
                     )),
                 Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 300),
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 250),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 4.v),
-                      _buildSignInWithSection(context),
-                      SizedBox(height: 26.v),
-                      dividerOfOr(context),
                       SizedBox(height: 25.v),
-                      _buildEmailSection(context),
-                      SizedBox(height: 24.v),
-                      _buildPasswordSection(context),
-                      SizedBox(height: 18.v),
+                      _buildSignInWithGoogleButton(context),
+                      SizedBox(height: 19.v),
+                      dividerOfOr(context),
+                      SizedBox(height: 15.v),
+                      _buildNameEditText(context),
+                      SizedBox(height: 20.v),
+                      _buildEmailEditText(context),
+                      SizedBox(height: 21.v),
+                      _buildPasswordEditText(context),
+                      SizedBox(height: 14.v),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
@@ -92,15 +95,15 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.v),
-                      _buildLogInSection(context),
-                      SizedBox(height: 11.v),
+                      SizedBox(height: 21.v),
+                      _buildSignUpButton(context),
+                      SizedBox(height: 30.v),
                       dividerOfOr(context),
-                      SizedBox(height: 10.v),
-                      _buildSignUpSection(context)
+                      SizedBox(height: 30.v),
+                      _buildLoginButton(context)
                     ],
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -135,17 +138,17 @@ class LoginScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildSignInWithSection(BuildContext context) {
+  Widget _buildSignInWithGoogleButton(BuildContext context) {
     return CustomOutlinedButton(
       text: "Sign in with Google",
       decoration: BoxDecoration(
           color: mainColor, borderRadius: BorderRadius.circular(35)),
       margin: EdgeInsets.only(
-        left: 52.h,
-        right: 50.h,
+        left: 53.h,
+        right: 51.h,
       ),
       leftIcon: Container(
-        margin: EdgeInsets.only(right: 13.h),
+        margin: EdgeInsets.only(right: 14.h),
         child: CustomImageView(
           imagePath: ImageConstant.imgGoogle,
           height: 26.v,
@@ -157,9 +160,64 @@ class LoginScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildEmailSection(BuildContext context) {
+  Widget _buildStackLine(BuildContext context) {
+    return SizedBox(
+      height: 24.v,
+      width: 399.h,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 9.v),
+              child: SizedBox(
+                width: 399.h,
+                child: Divider(),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 18.v,
+              width: 36.h,
+              margin: EdgeInsets.only(bottom: 1.v),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "OR",
+              style: CustomTextStyles.bodyLargeSecondaryContainer,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildNameEditText(BuildContext context) {
     return CustomTextFormField(
-      controller: emailSectionController,
+      controller: nameEditTextController,
+      hintText: "Username",
+      prefix: Icon(
+        Icons.person,
+        color: Colors.grey,
+        size: 30,
+      ),
+      contentPadding: EdgeInsets.only(right: 30.h, top: 10.h),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildEmailEditText(BuildContext context) {
+    return CustomTextFormField(
+      controller: emailEditTextController,
       hintText: "Email address",
       textInputType: TextInputType.emailAddress,
       prefix: Icon(
@@ -172,9 +230,9 @@ class LoginScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildPasswordSection(BuildContext context) {
+  Widget _buildPasswordEditText(BuildContext context) {
     return CustomTextFormField(
-      controller: passwordSectionController,
+      controller: passwordEditTextController,
       hintText: "Password",
       textInputAction: TextInputAction.done,
       textInputType: TextInputType.visiblePassword,
@@ -184,33 +242,35 @@ class LoginScreen extends StatelessWidget {
         size: 30,
       ),
       contentPadding: EdgeInsets.only(right: 30.h, top: 10.h),
-      suffix: Icon(
-        Icons.visibility_off_outlined,
-        color: Colors.grey,
-        size: 30,
-      ),
       obscureText: true,
     );
   }
 
+  ApiService apiService = ApiService();
+
   /// Section Widget
-  Widget _buildLogInSection(BuildContext context) {
+  Widget _buildSignUpButton(BuildContext context) {
     return CustomOutlinedButton(
-      text: "Log in",
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.dashboardScreen);
+      text: "Sign up",
+      onPressed: () async {
+        await apiService.register(
+          context,
+          email: emailEditTextController.text,
+          password: passwordEditTextController.text,
+          userName: nameEditTextController.text,
+        );
       },
       decoration: BoxDecoration(
           color: mainColor, borderRadius: BorderRadius.circular(35)),
       margin: EdgeInsets.only(
         left: 52.h,
-        right: 50.h,
+        right: 51.h,
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildOrOneSection(BuildContext context) {
+  Widget _buildStackLineOne(BuildContext context) {
     return SizedBox(
       height: 24.v,
       width: 399.h,
@@ -248,19 +308,19 @@ class LoginScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildSignUpSection(BuildContext context) {
+  Widget _buildLoginButton(BuildContext context) {
     return CustomOutlinedButton(
-      text: "Sign up",
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CreateAccountScreen()));
-      },
+      width: 300.h,
+      text: "Login",
       decoration: BoxDecoration(
           color: mainColor, borderRadius: BorderRadius.circular(35)),
       margin: EdgeInsets.only(
         left: 52.h,
-        right: 50.h,
+        right: 51.h,
       ),
+      onPressed: () {
+        Navigator.pushNamed(context, AppRoutes.loginScreen);
+      },
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sriram_s_application3/constants/snack_bar.dart';
 import 'package:sriram_s_application3/presentation/faq/faq_screen.dart';
 import 'package:sriram_s_application3/presentation/help_support/help_support.dart';
 
+import '../../Services/shared_services.dart';
 import '../../core/app_export.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -49,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Mythiresh",
+                          "${UserSharedServices.loginDetails()!.userInfo!.username}",
                           style: CustomTextStyles.titleMediumSemiBold,
                         ),
                         Text(
@@ -207,8 +209,12 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 36.v),
               InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.initialRoute);
+                onTap: () async {
+                  showSnackBar("Logged out successfully.", context);
+                  await preferences!.clear();
+                  await UserSharedServices.logout();
+                  Navigator.pushReplacementNamed(
+                      context, AppRoutes.authWrapperScreen);
                 },
                 child: Padding(
                   padding: EdgeInsets.only(left: 4.h),
