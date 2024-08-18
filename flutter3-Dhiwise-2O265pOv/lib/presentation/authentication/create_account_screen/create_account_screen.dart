@@ -85,16 +85,16 @@ class CreateAccountScreen extends StatelessWidget {
                       SizedBox(height: 21.v),
                       _buildPasswordEditText(context),
                       SizedBox(height: 14.v),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3.h),
-                          child: Text(
-                            "Forgot password?",
-                            style: CustomTextStyles.bodyLargePrimary,
-                          ),
-                        ),
-                      ),
+                      // Align(
+                      //   alignment: Alignment.centerRight,
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(right: 3.h),
+                      //     child: Text(
+                      //       "Forgot password?",
+                      //       style: CustomTextStyles.bodyLargePrimary,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: 21.v),
                       _buildSignUpButton(context),
                       SizedBox(height: 30.v),
