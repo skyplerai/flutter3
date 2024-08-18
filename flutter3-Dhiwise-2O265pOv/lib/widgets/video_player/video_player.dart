@@ -80,68 +80,134 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
     }
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Center(
+  //     child: isError
+  //         ? Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               // _buildColumnOne(
+  //               //   context,
+  //               //   connectCCTVText: "Connect CCTV",
+  //               //   camerasCounterText:
+  //               //       "${streamUrlController.streamUrls.length} cameras",
+  //               //   tapToConnectText: "Tap to connect",
+  //               // ),
+  //               Text('Error: $errorMessage'),
+  //               SizedBox(height: 10),
+  //               ElevatedButton(
+  //                 onPressed: () {
+  //                   setState(() {
+  //                     isError = false;
+  //                     errorMessage = '';
+  //                     _initializeWebSocket();
+  //                   });
+  //                 },
+  //                 child: Text('Retry'),
+  //               ),
+  //             ],
+  //           )
+  //         : _currentFrame != null
+  //             ? Column(
+  //                 children: [
+  //                   _buildColumnOne(
+  //                     context,
+  //                     connectCCTVText: "Connect CCTV",
+  //                     camerasCounterText: "${streamUrlController.streamUrls.length} cameras",
+  //                     tapToConnectText: "Tap to connect",
+  //                   ),
+  //                   _currentFrame!,
+  //                   ..._detectedFaces.map((face) {
+  //                     return Positioned(
+  //                       left: face['coordinates']['left'].toDouble(),
+  //                       top: face['coordinates']['top'].toDouble(),
+  //                       child: Container(
+  //                         width: (face['coordinates']['right'] -
+  //                                 face['coordinates']['left'])
+  //                             .toDouble(),
+  //                         height: (face['coordinates']['bottom'] -
+  //                                 face['coordinates']['top'])
+  //                             .toDouble(),
+  //                         decoration: BoxDecoration(
+  //                           border: Border.all(color: Colors.red, width: 2),
+  //                         ),
+  //                         child: Text(face['name'],
+  //                             style: TextStyle(color: Colors.red)),
+  //                       ),
+  //                     );
+  //                   }).toList()
+  //                 ],
+  //               )
+  //             : CircularProgressIndicator(),
+  //   );
+  // }
+
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: isError
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // _buildColumnOne(
-                //   context,
-                //   connectCCTVText: "Connect CCTV",
-                //   camerasCounterText:
-                //       "${streamUrlController.streamUrls.length} cameras",
-                //   tapToConnectText: "Tap to connect",
-                // ),
-                Text('Error: $errorMessage'),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      isError = false;
-                      errorMessage = '';
-                      _initializeWebSocket();
-                    });
-                  },
-                  child: Text('Retry'),
+    return Container(
+      width: double.infinity,
+      height: 250, // Adjust this height as needed
+      child: Center(
+        child: isError
+            ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Error: $errorMessage',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isError = false;
+                  errorMessage = '';
+                  _initializeWebSocket();
+                });
+              },
+              child: Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black, // Matches the button in the image
+              ),
+            ),
+          ],
+        )
+            : _currentFrame != null
+            ? Column(
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9, // Set aspect ratio (e.g., 16:9)
+              child: _currentFrame,
+            ),
+            ..._detectedFaces.map((face) {
+              return Positioned(
+                left: face['coordinates']['left'].toDouble(),
+                top: face['coordinates']['top'].toDouble(),
+                child: Container(
+                  width: (face['coordinates']['right'] - face['coordinates']['left'])
+                      .toDouble(),
+                  height: (face['coordinates']['bottom'] - face['coordinates']['top'])
+                      .toDouble(),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red, width: 2),
+                  ),
+                  child: Text(face['name'], style: TextStyle(color: Colors.red)),
                 ),
-              ],
-            )
-          : _currentFrame != null
-              ? Column(
-                  children: [
-                    _buildColumnOne(
-                      context,
-                      connectCCTVText: "Connect CCTV",
-                      camerasCounterText: "${streamUrlController.streamUrls.length} cameras" ?? "",
-                      tapToConnectText: "Tap to connect",
-                    ),
-                    _currentFrame!,
-                    ..._detectedFaces.map((face) {
-                      return Positioned(
-                        left: face['coordinates']['left'].toDouble(),
-                        top: face['coordinates']['top'].toDouble(),
-                        child: Container(
-                          width: (face['coordinates']['right'] -
-                                  face['coordinates']['left'])
-                              .toDouble(),
-                          height: (face['coordinates']['bottom'] -
-                                  face['coordinates']['top'])
-                              .toDouble(),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.red, width: 2),
-                          ),
-                          child: Text(face['name'],
-                              style: TextStyle(color: Colors.red)),
-                        ),
-                      );
-                    }).toList()
-                  ],
-                )
-              : CircularProgressIndicator(),
+              );
+            }).toList(),
+          ],
+        )
+            : CircularProgressIndicator(),
+      ),
     );
   }
+
+
+
+
 
   @override
   void dispose() {

@@ -54,7 +54,7 @@ class PricingScreen extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  "₹ 299.99".toUpperCase(),
+                  "₹ 399.99".toUpperCase(),
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

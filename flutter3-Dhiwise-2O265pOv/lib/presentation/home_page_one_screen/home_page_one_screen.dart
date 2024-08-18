@@ -347,6 +347,7 @@ class HomePageOneScreen extends StatelessWidget {
                         builder: (context) {
                           return AlertDialog(
                               title: const Text('Add a new class'),
+                              backgroundColor: Colors.black54,
                               content: TextField(
                                 controller: textController,
                                 autofocus: true,

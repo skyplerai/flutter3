@@ -137,6 +137,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Rename Face"),
+        backgroundColor: Colors.black87,
         content: TextField(
           controller: controller,
           decoration: InputDecoration(hintText: "Enter new name"),
