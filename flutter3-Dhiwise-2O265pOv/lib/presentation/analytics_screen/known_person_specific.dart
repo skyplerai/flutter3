@@ -1,35 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:sriram_s_application3/core/app_export.dart';
-import 'single_person.dart'; // Import the new page
+import 'single_person.dart';
 
 class KnownPersonSpecific extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 17.h, vertical: 17.h),
       padding: EdgeInsets.symmetric(
-        horizontal: 19.h,
-        vertical: 30.v,
+        horizontal: 15.h,
+        vertical: 20.v,
+      ),
+      margin: EdgeInsets.symmetric(
+        horizontal: 20.h,
+        vertical: 20.v
       ),
       decoration: AppDecoration.fillBlueGray.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder27,
       ),
-      child: Container(
-        child: GestureDetector( // Wrap the Text widget with GestureDetector or InkWell
-          onTap: () {
-            // Navigate to the NextPage when the text is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SinglePerson()),
-            );
-          },
-          child: Text(
-            "Known Persons",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Known peoples:-",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
           ),
-        ),
-      )
+          SizedBox(height: 15),
+          _buildPersonEntry(context, "Sriram", "14"),
+          SizedBox(height: 10),
+          _buildPersonEntry(context, "Kishor", "10"),
+          // Add more entries here if needed
+        ],
+      ),
     );
-
+  }
+  Widget _buildPersonEntry(BuildContext context, String name, String entryCount) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SinglePerson(name: name)),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey[850],
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage('assets/images/avatar.png'),
+              radius: 30,
+            ),
+            SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'No. of Entries $entryCount',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

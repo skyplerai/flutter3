@@ -7,8 +7,8 @@ import '../../widgets/app_bar/custom_app_bar.dart';
 class IpAddressScreen extends StatelessWidget {
   const IpAddressScreen({Key? key})
       : super(
-          key: key,
-        );
+    key: key,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +28,25 @@ class IpAddressScreen extends StatelessWidget {
 
   /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return CustomAppBar(
-      height: 41.v,
-      centerTitle: true,
-      title: AppbarTitle(
-        text: "IP ADDRESS",
+    return AppBar(
+      title: Center(
+        child: Text(
+          "IP Address",
+          style: TextStyle(
+              color: Colors.white), // Optional: Change text color if needed
+        ),
       ),
+      backgroundColor: Color.fromRGBO(0, 0, 0, 0.01),
+      // Set the background color to grey
       leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-            size: 30.h,
-          )),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

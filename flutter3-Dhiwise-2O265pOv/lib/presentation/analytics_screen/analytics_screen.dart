@@ -41,7 +41,8 @@ class AnalyticsScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: _buildAppBar(context),
-        body: Container(
+        body: SingleChildScrollView(
+          child: Container(
           width: double.maxFinite,
           padding: EdgeInsets.symmetric(vertical: 7.v),
           child: Column(
@@ -49,11 +50,11 @@ class AnalyticsScreen extends StatelessWidget {
               SizedBox(height: 9.v),
               _buildColumnApril(context),
               KnownPersonSpecific(),
-              Spacer()
             ],
           ),
         ),
       ),
+    )
     );
   }
 
@@ -335,6 +336,8 @@ class AnalyticsScreen extends StatelessWidget {
   }
 
   ///Section Widget
+
+
 
   /// Section Widget
   Widget _buildColumn(BuildContext context) {

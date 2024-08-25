@@ -175,7 +175,6 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     String text = textController.text;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
         body: Column(
           children: [
             SizedBox(height: 39),

@@ -13,17 +13,38 @@ class DocumentationScreen extends StatelessWidget {
       child: Scaffold(
         body: Container(
           width: 396.h,
-          padding: EdgeInsets.only(top: 76.v),
+          padding: EdgeInsets.symmetric(vertical: 34.v),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 5.v),
-              Text(
-                "Doc",
-                style: theme.textTheme.headlineMedium,
-              )
+              Expanded(
+                child: _buildAppBar(context),
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Center(
+        child: Text(
+          "How to SetUp",
+          style: TextStyle(color: Colors.white), // Optional: Change text color if needed
+        ),
+      ),
+      backgroundColor: Color.fromRGBO(0, 0, 0, 0.01),  // Set the background color to grey
+      leading: IconButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
         ),
       ),
     );

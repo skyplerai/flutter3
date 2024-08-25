@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class SinglePerson extends StatelessWidget {
+  final String name;
+
+  SinglePerson({required this.name});
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Sriram",
+          "$name",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color.fromRGBO(10, 20, 10, 0.1),
