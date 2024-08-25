@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sriram_s_application3/constants/style.dart';
+import 'package:sriram_s_application3/presentation/pricing_screen/payment_screen.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_elevated_button.dart';
@@ -144,6 +145,15 @@ class PricingScreen extends StatelessWidget {
   /// Section Widget
   Widget _buildGetStartedButton(BuildContext context) {
     return CustomElevatedButton(
+      onPressed: () {
+        // Navigate to the UPI payment page when the button is pressed
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UpiTransactionPage(),
+          ),
+        );
+      },
       height: 45.v,
       width: 180.h,
       buttonStyle: ElevatedButton.styleFrom(backgroundColor: mainColor),

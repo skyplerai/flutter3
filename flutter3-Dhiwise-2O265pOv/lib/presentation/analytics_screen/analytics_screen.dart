@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sriram_s_application3/presentation/analytics_screen/known_person_specific.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_title.dart';
 import '../../widgets/app_bar/appbar_trailing_image.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_drop_down.dart'; // ignore_for_file: must_be_immutable
+
+
 
 // ignore_for_file: must_be_immutable
 class AnalyticsScreen extends StatelessWidget {
@@ -45,6 +48,7 @@ class AnalyticsScreen extends StatelessWidget {
             children: [
               SizedBox(height: 9.v),
               _buildColumnApril(context),
+              KnownPersonSpecific(),
               Spacer()
             ],
           ),
@@ -79,7 +83,7 @@ class AnalyticsScreen extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 17.h),
       padding: EdgeInsets.symmetric(
         horizontal: 19.h,
-        vertical: 25.v,
+        vertical: 30.v,
       ),
       decoration: AppDecoration.fillBlueGray.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder27,
@@ -90,12 +94,19 @@ class AnalyticsScreen extends StatelessWidget {
         children: [
           SizedBox(height: 5.v),
           Padding(
-            padding: EdgeInsets.only(left: 16.h),
+            padding: EdgeInsets.only(left: 10.h
+            ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Text(
+                  "From:",
+                  style: TextStyle(fontSize: 16), // Adjust the number to your desired font size
+                ),
+                SizedBox(width: 10),
                 CustomDropDown(
-                  width: 70.h,
-                  hintText: "8",
+                  width: 60.h,
+                  hintText: "10",
                   hintStyle: TextStyle(fontSize: 13, color: Colors.black),
                   textStyle: TextStyle(fontSize: 14, color: Colors.black),
                   items: dropdownItemList,
@@ -105,7 +116,7 @@ class AnalyticsScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
                   child: CustomDropDown(
-                    width: 150.h,
+                    width: 110.h,
                     hintStyle: TextStyle(fontSize: 13, color: Colors.black),
                     textStyle: TextStyle(fontSize: 14, color: Colors.black),
                     contentPadding:
@@ -118,7 +129,7 @@ class AnalyticsScreen extends StatelessWidget {
                         width: 8.h,
                       ),
                     ),
-                    hintText: "April",
+                    hintText: "",
                     items: dropdownItemList1,
                   ),
                 ),
@@ -138,14 +149,79 @@ class AnalyticsScreen extends StatelessWidget {
                         width: 8.h,
                       ),
                     ),
-                    hintText: "2023",
+                    hintText: "",
                     items: dropdownItemList2,
                   ),
                 )
               ],
             ),
           ),
-          SizedBox(height: 19.v),
+
+          SizedBox(height: 10.v),
+          Padding(
+            padding: EdgeInsets.only(left: 33.h
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "To:",
+                  style: TextStyle(fontSize: 16), // Adjust the number to your desired font size
+                ),
+                SizedBox(width: 10),
+                CustomDropDown(
+                  width: 60.h,
+                  hintText: "",
+                  hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                  textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                  items: dropdownItemList,
+                  contentPadding:
+                  EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 9.h),
+                  child: CustomDropDown(
+                    width: 110.h,
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                    textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                    contentPadding:
+                    EdgeInsets.only(left: 10.h, top: 7.5.h, bottom: 7.5.h),
+                    icon: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 13.h),
+                      child: CustomImageView(
+                        imagePath: ImageConstant.imgArrowdown,
+                        height: 3.v,
+                        width: 8.h,
+                      ),
+                    ),
+                    hintText: "",
+                    items: dropdownItemList1,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 9.h),
+                  child: CustomDropDown(
+                    width: 90.h,
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black),
+                    textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                    contentPadding:
+                    EdgeInsets.only(left: 15.h, top: 7.5.h, bottom: 7.5.h),
+                    icon: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 13.h),
+                      child: CustomImageView(
+                        imagePath: ImageConstant.imgArrowdown,
+                        height: 3.v,
+                        width: 8.h,
+                      ),
+                    ),
+                    hintText: "",
+                    items: dropdownItemList2,
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 25.v),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -257,6 +333,8 @@ class AnalyticsScreen extends StatelessWidget {
       ),
     );
   }
+
+  ///Section Widget
 
   /// Section Widget
   Widget _buildColumn(BuildContext context) {

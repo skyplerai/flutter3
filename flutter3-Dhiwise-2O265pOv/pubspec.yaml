@@ -8,6 +8,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  fl_chart:
+  upi_india:
   cached_network_image: ^3.3.0
   flutter_screenutil:
   pinput:
@@ -17,7 +19,6 @@ dependencies:
   intl:
   google_fonts:
   connectivity_plus: ^5.0.2
-  flutter_native_splash:
   web_socket_channel:
   provider:
   shared_preferences:

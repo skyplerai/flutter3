@@ -84,7 +84,7 @@ class CreateAccountScreen extends StatelessWidget {
                       _buildEmailEditText(context),
                       SizedBox(height: 21.v),
                       _buildPasswordEditText(context),
-                      SizedBox(height: 14.v),
+                      // SizedBox(height: 14.v),
                       // Align(
                       //   alignment: Alignment.centerRight,
                       //   child: Padding(
@@ -325,4 +325,28 @@ class CreateAccountScreen extends StatelessWidget {
       },
     );
   }
+}
+
+Widget _buildTermsAndConditionsCheckbox(BuildContext context) {
+  bool _isChecked = false;
+
+  return Row(
+    children: [
+      Checkbox(
+        value: _isChecked,
+        onChanged: (bool? value) {
+          _isChecked = value!;
+        },
+      ),
+      Expanded(
+        child: Text(
+          "I agree to the Terms and Services",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    ],
+  );
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sriram_s_application3/constants/style.dart';
 import 'package:sriram_s_application3/core/app_export.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -54,10 +54,6 @@ class SettingsScreen extends StatelessWidget {
                           "${UserSharedServices.loginDetails()!.userInfo!.username}",
                           style: CustomTextStyles.titleMediumSemiBold,
                         ),
-                        Text(
-                          "Chennai, Tamil Nadu",
-                          style: theme.textTheme.bodyMedium,
-                        )
                       ],
                     ),
                   )
@@ -115,7 +111,7 @@ class SettingsScreen extends StatelessWidget {
                           bottom: 3.v,
                         ),
                         child: Text(
-                          "Documentation",
+                          "How to Connect",
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
@@ -240,7 +236,7 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(height: 20.v),
               CustomImageView(
                 imagePath: "assets/images/logo.png",
-                height: 142.v,
+                height: 152.v,
                 width: 152.h,
                 alignment: Alignment.center,
               ),
