@@ -1,50 +1,107 @@
 import 'package:flutter/material.dart';
-import '../../../core/app_export.dart';
 
 class DocumentationScreen extends StatelessWidget {
-  const DocumentationScreen({Key? key})
-      : super(
-          key: key,
-        );
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          width: 396.h,
-          padding: EdgeInsets.symmetric(vertical: 34.v),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 5.v),
-              Expanded(
-                child: _buildAppBar(context),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('How to Connect Your CCTV Camera'),
+        backgroundColor: Colors.orange,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
           ),
         ),
       ),
-    );
-  }
-
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Center(
-        child: Text(
-          "How to SetUp",
-          style: TextStyle(color: Colors.white), // Optional: Change text color if needed
-        ),
-      ),
-      backgroundColor: Color.fromRGBO(0, 0, 0, 0.01),  // Set the background color to grey
-      leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome!',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'We’re excited to help you get your CCTV camera connected to the ThirdEye app. Just follow these simple steps, and you’ll be up and running in no time!',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Step 1: Open the App',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Once you’ve logged in, you’ll land on the home screen. To add your CCTV camera, tap the "Tap to Connect" button. It’s right there on the main page!',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 800,  // Adjusted for mobile screenshot
+              child: Center(
+                child: Image.asset(
+                  'assets/screen_shots/screen_shot_1.png',  // Replace with your actual image asset path
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Step 2: Choose Your Camera Type',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'After tapping "Tap to Connect," you’ll see a pop-up with two options: "Static" and "DDNS." Simply choose the option that matches your camera setup.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 800,  // Adjusted for mobile screenshot
+              child: Center(
+                child: Image.asset(
+                  'assets/screen_shots/screen_shot_2.png',  // Replace with your actual image asset path
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Step 3: Enter Camera Details',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Next, you’ll be asked to enter some details about your camera: the IP Network, Username, and Password. Make sure everything is correct, then press "Connect." Voilà! You should now see the live stream from your CCTV camera.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 800,  // Adjusted for mobile screenshot
+              child: Center(
+                child: Image.asset(
+                  'assets/screen_shots/screen_shot_3.png',  // Replace with your actual image asset path
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'And that’s it!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'You’ve successfully connected your CCTV camera to the ThirdEye app. Now, sit back and keep an eye on what matters most, right from your phone.',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );

@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'Line_graph.dart';
 
-class SinglePerson extends StatelessWidget {
+class SinglePerson extends StatefulWidget {
   final String name;
 
   SinglePerson({required this.name});
 
+  @override
+  _SinglePersonState createState() => _SinglePersonState();
+}
+
+class _SinglePersonState extends State<SinglePerson> {
+  String selectedPeriod = 'Week'; // Default selection
+  final double fontSize = 18.0; // Custom font size
+  final Color underlineColor = Colors.orange; // Custom underline color
 
   @override
   Widget build(BuildContext context) {
+    // Example data: 7 days of entries
+    final List<int> entries = [3, 7, 5, 8, 2, 4, 6];
+    final int totalVisits = entries.reduce((a, b) => a + b); // Calculate total visitors
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "$name",
+          widget.name,
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color.fromRGBO(10, 20, 10, 0.1),
@@ -26,127 +39,65 @@ class SinglePerson extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Number of Visits",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10), // Vertical gap
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildPeriodButton('Week'),
+                  _buildPeriodButton('Month'),
+                  _buildPeriodButton('Year'),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: true,
-                    getDrawingHorizontalLine: (value) {
-                      return FlLine(
-                        color: Color(0xff37434d),
-                        strokeWidth: 1,
-                      );
-                    },
-                    getDrawingVerticalLine: (value) {
-                      return FlLine(
-                        color: Color(0xff37434d),
-                        strokeWidth: 1,
-                      );
-                    },
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 30,
-                        getTitlesWidget: (value, meta) {
-                          const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-                          if (value >= 0 && value <= 6) {
-                            return Text(
-                              daysOfWeek[value.toInt()],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          } else {
-                            return Text('');
-                          }
-                        },
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 40,
-                        interval: 1,
-                        getTitlesWidget: (value, meta) {
-                          return Text(
-                            '${value.toInt()}k',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(
-                    show: true,
-                    border: Border.all(color: Color(0xff37434d), width: 1),
-                  ),
-                  minX: 0,
-                  maxX: 6,
-                  minY: 0,
-                  maxY: 7,
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: [
-                        FlSpot(0, 2),
-                        FlSpot(1, 3),
-                        FlSpot(2, 1.5),
-                        FlSpot(3, 5),
-                        FlSpot(4, 3.5),
-                        FlSpot(5, 4),
-                        FlSpot(6, 6),
-                      ],
-                      isCurved: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.cyanAccent,
-                          Colors.greenAccent,
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      barWidth: 5,
-                      isStrokeCapRound: true,
-                      belowBarData: BarAreaData(
-                        show: true,
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.cyanAccent.withOpacity(0.3),
-                            Colors.greenAccent.withOpacity(0.3),
-                          ],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                      ),
-                    ),
-                  ],
-                  backgroundColor: Color(0xff232d37),
+            SizedBox(height: 20), // Vertical gap between period buttons and chart
+            EntriesLineChart(
+              entriesPerDay: entries,
+              width: 350, // Custom width
+              height: 250, // Custom height
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom margin
+            ),
+            SizedBox(height: 16), // Spacing between the chart and the label
+            ShaderMask(
+              shaderCallback: (bounds) => LinearGradient(
+                colors: [Colors.orange, Colors.white],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ).createShader(bounds),
+              child: Text(
+                'Total No of Visits: $totalVisits',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPeriodButton(String period) {
+    bool isSelected = selectedPeriod == period;
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          selectedPeriod = period;
+        });
+      },
+      child: Text(
+        period,
+        style: TextStyle(
+          color: isSelected ? Colors.orange : Colors.white,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          fontSize: fontSize,
+          decoration: isSelected ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: isSelected ? underlineColor : Colors.transparent, // Custom underline color
         ),
       ),
     );

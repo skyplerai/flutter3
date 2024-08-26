@@ -139,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
                           top: 5.v,
                         ),
                         child: Text(
-                          "Pricing",
+                          "Payment and Pricing",
                           style: theme.textTheme.titleMedium,
                         ),
                       ),

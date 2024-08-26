@@ -13,6 +13,7 @@ import '../../widgets/custom_text_form_field.dart';
 class StaticScreen extends StatelessWidget {
   StaticScreen({Key? key}) : super(key: key);
 
+  final streamUrlController = Get.find<StreamUrlController>();
   TextEditingController ipnetworkvalueController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -132,7 +133,7 @@ class StaticScreen extends StatelessWidget {
     );
   }
 
-  final streamUrlController = Get.put(StreamUrlController());
+
 
   Widget _buildConnectButton(BuildContext context) {
     return CustomElevatedButton(
@@ -156,14 +157,13 @@ class StaticScreen extends StatelessWidget {
 
           if (response.statusCode == 200 || response.statusCode == 201) {
             final streamUrlsResponse =
-                await apiService.getStreamUrl("static"); // or "ddns"
+            await apiService.getStreamUrl("static"); // or "ddns"
             final urls = streamUrlsResponse.streamUrls;
-            streamUrlController.streamUrls
-                .addAll(urls.map((url) => url.url).toList());
+            urls.forEach((url) => streamUrlController.addCamera(url as String));
             showSnackBar(jsonDecode(response.body)['message'], context);
             Navigator.pop(context);
           } else {
-            showSnackBar("Something went wrong.", context);
+            showSnackBar("Error: ${response.statusCode} - ${response.body}", context);
             Navigator.pop(context);
           }
         } catch (e) {

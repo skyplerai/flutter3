@@ -21,7 +21,7 @@ class HomePageOneScreen extends StatelessWidget {
   HomePageOneScreen({Key? key}) : super(key: key);
 
   int? selectedIndex;
-  final streamUrlController = Get.put(StreamUrlController());
+  final streamUrlController = Get.find<StreamUrlController>();
   final textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -77,18 +77,18 @@ class HomePageOneScreen extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         color: Color.fromRGBO(46, 45, 45, 1),
                                         borderRadius:
-                                            BorderRadius.circular(20.v)),
+                                        BorderRadius.circular(20.v)),
                                     child: Column(
                                       children: [
                                         ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(15.v),
+                                          BorderRadius.circular(15.v),
                                           child: WebSocketVideoPlayer(
                                             webSocketUrl: streamUrlController
                                                 .streamUrls[index],
                                             authToken: UserSharedServices
-                                                        .loginDetails()
-                                                    ?.accessToken ??
+                                                .loginDetails()
+                                                ?.accessToken ??
                                                 '',
                                           ),
                                         ),
@@ -120,7 +120,7 @@ class HomePageOneScreen extends StatelessWidget {
                                     content: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         ElevatedButton(
                                             onPressed: () {
@@ -130,7 +130,7 @@ class HomePageOneScreen extends StatelessWidget {
                                                   builder: (context) {
                                                     return AlertDialog(
                                                       backgroundColor:
-                                                          Colors.black,
+                                                      Colors.black,
                                                       content: StaticScreen(),
                                                     );
                                                   });
@@ -139,7 +139,7 @@ class HomePageOneScreen extends StatelessWidget {
                                                 backgroundColor: mainColor),
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Static",
                                                 style: TextStyle(
@@ -158,7 +158,7 @@ class HomePageOneScreen extends StatelessWidget {
                                                   builder: (context) {
                                                     return AlertDialog(
                                                       backgroundColor:
-                                                          Colors.black,
+                                                      Colors.black,
                                                       content: DdnsScreen(),
                                                     );
                                                   });
@@ -167,7 +167,7 @@ class HomePageOneScreen extends StatelessWidget {
                                                 backgroundColor: mainColor),
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "DDNS",
                                                 style: TextStyle(
@@ -185,7 +185,7 @@ class HomePageOneScreen extends StatelessWidget {
                               context,
                               connectCCTVText: "Connect CCTV",
                               camerasCounterText:
-                                  "${streamUrlController.streamUrls.length} cameras",
+                              "${streamUrlController.streamUrls.length} cameras",
                               tapToConnectText: "Tap to connect",
                             );
                           }),
@@ -224,7 +224,7 @@ class HomePageOneScreen extends StatelessWidget {
       ),
       title: AppbarSubtitle(
         text:
-            "${UserSharedServices.loginDetails()!.userInfo!.username.toString()}",
+        "${UserSharedServices.loginDetails()!.userInfo!.username.toString()}",
         margin: EdgeInsets.only(left: 10.h),
       ),
       actions: [
@@ -291,11 +291,11 @@ class HomePageOneScreen extends StatelessWidget {
   bool isVideoConnected = false;
 
   Widget _buildColumnOne(
-    BuildContext context, {
-    required String connectCCTVText,
-    required String camerasCounterText,
-    required String tapToConnectText,
-  }) {
+      BuildContext context, {
+        required String connectCCTVText,
+        required String camerasCounterText,
+        required String tapToConnectText,
+      }) {
     textController.text = connectCCTVText;
     return StatefulBuilder(builder: (context, StateSetter setState) {
       return Container(

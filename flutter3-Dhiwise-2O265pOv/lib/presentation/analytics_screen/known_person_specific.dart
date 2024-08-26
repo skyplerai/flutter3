@@ -29,9 +29,9 @@ class KnownPersonSpecific extends StatelessWidget {
             ),
           ),
           SizedBox(height: 15),
-          _buildPersonEntry(context, "Sriram", "14"),
+          _buildPersonEntry(context, "Sriram", "140"),
           SizedBox(height: 10),
-          _buildPersonEntry(context, "Kishor", "10"),
+          _buildPersonEntry(context, "Kishor", "100"),
           // Add more entries here if needed
         ],
       ),
@@ -54,8 +54,9 @@ class KnownPersonSpecific extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage('assets/images/avatar.png'),
-              radius: 30,
+              backgroundImage: AssetImage(ImageConstant.imgImage),
+              radius: 40,
+              backgroundColor: Colors.transparent, // No background color
             ),
             SizedBox(width: 20),
             Column(
@@ -70,7 +71,7 @@ class KnownPersonSpecific extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'No. of Entries $entryCount',
+                  'Total No. of Entries $entryCount',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
