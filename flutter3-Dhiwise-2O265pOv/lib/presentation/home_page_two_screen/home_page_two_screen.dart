@@ -9,11 +9,11 @@ import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/video_player/video_player.dart';
 
 class HomePageTwoScreen extends StatelessWidget {
-  HomePageTwoScreen({Key? key})
+  const HomePageTwoScreen({Key? key})
       : super(
-          key: key,
-        );
-  final textController = TextEditingController();
+    key: key,
+  );
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,8 +34,7 @@ class HomePageTwoScreen extends StatelessWidget {
                 width: 500.adaptSize,
                 child: WebSocketVideoPlayer(
                   webSocketUrl: "",
-                  authToken:
-                      UserSharedServices.loginDetails()?.accessToken ?? '',
+                  authToken: UserSharedServices.loginDetails()?.accessToken ?? '',
                 ),
               ),
               SizedBox(height: 12.v),
@@ -160,11 +159,11 @@ class HomePageTwoScreen extends StatelessWidget {
 
   /// Common widget
   Widget _buildColumnOne(
-    BuildContext context, {
-    required String connectCCTVText,
-    required String camerasCounterText,
-    required String imageThirteen,
-  }) {
+      BuildContext context, {
+        required String connectCCTVText,
+        required String camerasCounterText,
+        required String imageThirteen,
+      }) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 13.h,
@@ -192,35 +191,6 @@ class HomePageTwoScreen extends StatelessWidget {
                   Row(
                     children: [
                       CustomImageView(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                    title: const Text('Add a new class'),
-                                    content: TextField(
-                                      controller: textController,
-                                      autofocus: true,
-                                      decoration: const InputDecoration(
-                                          hintText: "Enter the name"),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text('Cancel'),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text('Add'),
-                                        onPressed: () {
-                                          Navigator.pop(
-                                              context, textController.text);
-                                        },
-                                      ),
-                                    ]);
-                              });
-                        },
                         imagePath: ImageConstant.imgImage16x13,
                         height: 16.v,
                         width: 13.h,

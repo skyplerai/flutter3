@@ -80,6 +80,12 @@ class AnalyticsScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildColumnApril(BuildContext context) {
+    double totalPeople = 192;
+    double knownPeople = 85;
+    double unknownPeople = 107;
+
+    double knownPercentage = knownPeople / totalPeople;
+    double unknownPercentage = unknownPeople / totalPeople;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 17.h),
       padding: EdgeInsets.symmetric(
@@ -228,17 +234,42 @@ class AnalyticsScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child: SizedBox(
-                  height: 150.adaptSize,
-                  width: 150.adaptSize,
-                  child: CircularProgressIndicator(
-                    value: 0.4,
-                    strokeWidth: 55,
-                    backgroundColor: appTheme.yellow90002,
-                    color: appTheme.red600,
+                child: GestureDetector(
+                  onTap: () {
+                    final percentage = (knownPercentage * 100).toStringAsFixed(2);
+                    final Upercentage = (unknownPercentage * 100).toStringAsFixed(2);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.orange, // Change the background color of the dialog
+                          content: Text(
+                            'Known People: $percentage%, \n'
+                                'Unknown People: $Upercentage%',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700), // Change the text color
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        height: 150.adaptSize,
+                        width: 150.adaptSize,
+                        child: CircularProgressIndicator(
+                          value: knownPercentage,
+                          strokeWidth: 55,
+                          backgroundColor: appTheme.yellow90002,
+                          color: appTheme.red600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
               Padding(
                 padding: EdgeInsets.only(
                   top: 18.v,
@@ -252,7 +283,7 @@ class AnalyticsScreen extends StatelessWidget {
                       style: theme.textTheme.titleSmall,
                     ),
                     Text(
-                      "192",
+                      "${totalPeople.toInt()}",
                       style: CustomTextStyles.titleLarge22,
                     ),
                     SizedBox(height: 9.v),
@@ -262,7 +293,7 @@ class AnalyticsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 1.v),
                     Text(
-                      "107",
+                      "${unknownPeople.toInt()}",
                       style: CustomTextStyles.titleLarge22,
                     ),
                     SizedBox(height: 9.v),
@@ -274,7 +305,7 @@ class AnalyticsScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(right: 3.h),
                       child: Text(
-                        "85",
+                        "${knownPeople.toInt()}",
                         style: CustomTextStyles.titleLarge22,
                       ),
                     )

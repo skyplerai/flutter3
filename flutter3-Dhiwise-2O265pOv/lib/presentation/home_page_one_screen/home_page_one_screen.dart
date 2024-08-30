@@ -1,6 +1,4 @@
 // lib/presentation/home_page_one_screen.dart
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sriram_s_application3/Services/shared_services.dart';
@@ -21,8 +19,8 @@ class HomePageOneScreen extends StatelessWidget {
   HomePageOneScreen({Key? key}) : super(key: key);
 
   int? selectedIndex;
-  final streamUrlController = Get.find<StreamUrlController>();
-  final textController = TextEditingController();
+  final streamUrlController = Get.put(StreamUrlController());
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -31,12 +29,11 @@ class HomePageOneScreen extends StatelessWidget {
             context: context,
             builder: (context) {
               return AlertDialog(
-                  backgroundColor: Colors.black87,
                   content: const Text('Do you want to exit the app?'),
                   actions: [
                     ElevatedButton(
                         onPressed: () {
-                          exit(0);
+                          Navigator.of(context).pop(true);
                         },
                         child: const Text('Yes')),
                     TextButton(
@@ -78,21 +75,12 @@ class HomePageOneScreen extends StatelessWidget {
                                         color: Color.fromRGBO(46, 45, 45, 1),
                                         borderRadius:
                                         BorderRadius.circular(20.v)),
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(15.v),
-                                          child: WebSocketVideoPlayer(
-                                            webSocketUrl: streamUrlController
-                                                .streamUrls[index],
-                                            authToken: UserSharedServices
-                                                .loginDetails()
-                                                ?.accessToken ??
-                                                '',
-                                          ),
-                                        ),
-                                      ],
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.v),
+                                      child: WebSocketVideoPlayer(
+                                        webSocketUrl: streamUrlController.streamUrls[index] ?? '',
+                                        authToken: UserSharedServices.loginDetails()?.accessToken ?? '',
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -296,131 +284,95 @@ class HomePageOneScreen extends StatelessWidget {
         required String camerasCounterText,
         required String tapToConnectText,
       }) {
-    textController.text = connectCCTVText;
-    return StatefulBuilder(builder: (context, StateSetter setState) {
-      return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 13.h,
-          vertical: 14.v,
-        ),
-        decoration: AppDecoration.fillBlueGray.copyWith(
-          borderRadius: BorderRadiusStyle.roundedBorder18,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      connectCCTVText,
-                      style: theme.textTheme.titleSmall!.copyWith(
-                        color: appTheme.whiteA700,
-                      ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 13.h,
+        vertical: 14.v,
+      ),
+      decoration: AppDecoration.fillBlueGray.copyWith(
+        borderRadius: BorderRadiusStyle.roundedBorder18,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    connectCCTVText,
+                    style: theme.textTheme.titleSmall!.copyWith(
+                      color: appTheme.whiteA700,
                     ),
-                    Row(
-                      children: [
-                        CustomImageView(
-                          imagePath: ImageConstant.imgImage16x13,
-                          height: 10.v,
-                          width: 10.h,
-                          margin: EdgeInsets.symmetric(vertical: 1.v),
+                  ),
+                  Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: ImageConstant.imgImage16x13,
+                        height: 10.v,
+                        width: 10.h,
+                        margin: EdgeInsets.symmetric(vertical: 1.v),
+                      ),
+                      Text(
+                        camerasCounterText,
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          color: appTheme.whiteA700,
                         ),
-                        Text(
-                          camerasCounterText,
-                          style: theme.textTheme.bodySmall!.copyWith(
-                            color: appTheme.whiteA700,
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+              CustomImageView(
+                imagePath: ImageConstant.imgImage20x20,
+                height: 15.adaptSize,
+                width: 15.adaptSize,
+                margin: EdgeInsets.only(
+                  left: 4.h,
+                  top: 4.v,
+                  bottom: 23.v,
                 ),
-                CustomImageView(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                              title: const Text('Add a new class'),
-                              backgroundColor: Colors.black54,
-                              content: TextField(
-                                controller: textController,
-                                autofocus: true,
-                                decoration: const InputDecoration(
-                                    hintText: "Enter the name"),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: Text('Cancel'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text('Add'),
-                                  onPressed: () {
-                                    // ignore: unused_element
-                                    Navigator.pop(context,
-                                        connectCCTVText = textController.text);
-                                    print("print>>>>>>>$connectCCTVText");
-                                    setState(() {});
-                                  },
-                                ),
-                              ]);
-                        });
-                  },
-                  imagePath: ImageConstant.imgImage20x20,
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  margin: EdgeInsets.only(
-                    left: 4.h,
-                    top: 4.v,
-                    bottom: 23.v,
+              )
+            ],
+          ),
+          SizedBox(height: 11.v),
+          Container(
+            margin: EdgeInsets.only(right: 1.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 108.h,
+              vertical: 78.v,
+            ),
+            decoration: AppDecoration.fillGray.copyWith(
+              borderRadius: BorderRadiusStyle.roundedBorder14,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 2.v),
+                Text(
+                  tapToConnectText,
+                  style: CustomTextStyles.titleMediumGray700.copyWith(
+                    color: appTheme.gray700,
+                  ),
+                ),
+                CustomIconButton(
+                  height: 30.adaptSize,
+                  width: 30.adaptSize,
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imgImage30x30,
                   ),
                 )
               ],
             ),
-            SizedBox(height: 11.v),
-            Container(
-              margin: EdgeInsets.only(right: 1.h),
-              padding: EdgeInsets.symmetric(
-                horizontal: 108.h,
-                vertical: 78.v,
-              ),
-              decoration: AppDecoration.fillGray.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder14,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 2.v),
-                  Text(
-                    tapToConnectText,
-                    style: CustomTextStyles.titleMediumGray700.copyWith(
-                      color: appTheme.gray700,
-                    ),
-                  ),
-                  CustomIconButton(
-                    height: 30.adaptSize,
-                    width: 30.adaptSize,
-                    child: CustomImageView(
-                      imagePath: ImageConstant.imgImage30x30,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 21.v)
-          ],
-        ),
-      );
-    });
+          ),
+          SizedBox(height: 21.v)
+        ],
+      ),
+    );
   }
 
   void onTapColumnuserone(BuildContext context) {

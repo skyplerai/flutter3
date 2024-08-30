@@ -64,7 +64,7 @@ class EntriesLineChart extends StatelessWidget {
                   return FlDotCirclePainter(
                     color: Colors.orange,
                     radius: 6,
-                    strokeWidth: 3,
+                    strokeWidth: 2,
                     strokeColor: Colors.white,
                   );
                 },

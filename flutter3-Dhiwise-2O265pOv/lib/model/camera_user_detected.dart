@@ -10,8 +10,8 @@ String cameraDetectedUsersToJson(CameraDetectedUsers data) =>
 
 class CameraDetectedUsers {
   int? count;
-  dynamic next;
-  dynamic previous;
+  String? next;
+  String? previous;
   List<DetectedFace>? results;
 
   CameraDetectedUsers({
@@ -46,34 +46,30 @@ class DetectedFace {
   int? id;
   int? user;
   String? faceId;
-  String? imagePath;
+  String? image;
   String? lastSeen;
-  String? imageUrl;
 
   DetectedFace({
     this.id,
     this.user,
     this.faceId,
-    this.imagePath,
+    this.image,
     this.lastSeen,
-    this.imageUrl,
   });
 
   factory DetectedFace.fromJson(Map<String, dynamic> json) => DetectedFace(
     id: json["id"],
     user: json["user"],
     faceId: json["face_id"],
-    imagePath: json["image_path"],
+    image: json["image"],
     lastSeen: json["last_seen"],
-    imageUrl: json["image_url"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "user": user,
     "face_id": faceId,
-    "image_path": imagePath,
+    "image": image,
     "last_seen": lastSeen,
-    "image_url": imageUrl,
   };
 }

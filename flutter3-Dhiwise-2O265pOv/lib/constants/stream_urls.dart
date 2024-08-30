@@ -1,5 +1,5 @@
+//lib/constants/stream_urls.dart
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../services/shared_services.dart';
 import '../model/stream_urls.dart';
@@ -10,54 +10,29 @@ class StreamUrlController extends GetxController {
 
   @override
   void onInit() {
-    loadSavedCameras();
+    getAllTheUrls();
     super.onInit();
   }
 
-  Future<void> loadSavedCameras() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedUrls = prefs.getStringList('cameras') ?? [];
-    if (savedUrls.isNotEmpty) {
-      streamUrls.value = savedUrls;
-    } else {
-      await getAllTheUrls();
-    }
-  }
-
-  Future<void> saveCameras() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('cameras', streamUrls);
-  }
-
-  Future<void> getAllTheUrls() async {
+  getAllTheUrls() async {
     try {
       final loginDetails = UserSharedServices.loginDetails();
       if (loginDetails != null && loginDetails.streamUrls != null) {
         final allUrls = loginDetails.streamUrls!;
-        streamUrls.value = allUrls.cast<String>();
+        streamUrls.addAll(allUrls.cast<String>());
+        print("streamUrls: $streamUrls");
       } else {
         final staticUrlsResponse = await apiService.getStreamUrl("static");
         final ddnsUrlsResponse = await apiService.getStreamUrl("ddns");
         final staticUrls = (staticUrlsResponse.streamUrls ?? []).cast<String>();
         final ddnsUrls = (ddnsUrlsResponse.streamUrls ?? []).cast<String>();
-        streamUrls.value = [...staticUrls, ...ddnsUrls];
+        streamUrls.addAll(staticUrls);
+        streamUrls.addAll(ddnsUrls);
+        print("streamUrls: $streamUrls");
       }
-      await saveCameras();
-      print("streamUrls: $streamUrls");
     } catch (e) {
+      // Handle any errors that occur during the API call
       print("Error fetching stream URLs: $e");
     }
-  }
-
-  void addCamera(String url) {
-    if (!streamUrls.contains(url)) {
-      streamUrls.add(url);
-      saveCameras();
-    }
-  }
-
-  void removeCamera(String url) {
-    streamUrls.remove(url);
-    saveCameras();
   }
 }

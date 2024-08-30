@@ -297,3 +297,31 @@ class ApiService {
     return response.statusCode == 200;
   }
 }
+
+Future<Map<String, double>> fetchData() async {
+  try {
+    ApiService apiService = ApiService();
+    final response = await apiService.getStreamUrl("cameraType");
+
+    if (response != null) {
+      Map<String, dynamic> data = jsonDecode(response.toString());
+      if (data.containsKey('known') && data.containsKey('unknown')) {
+        return {
+          "Known": data['known'].toDouble(),
+          "Unknown": data['unknown'].toDouble(),
+        };
+      } else {
+        // Return an error state data map if keys are missing
+        return {"Error": 100.0};
+      }
+    } else {
+      // Return an error state data map if response is null
+      return {"Error": 100.0};
+    }
+  } catch (e) {
+    // Return an error state data map on exception
+    return {"Error": 100.0};
+  }
+}
+
+

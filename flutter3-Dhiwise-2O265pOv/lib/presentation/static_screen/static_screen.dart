@@ -13,11 +13,10 @@ import '../../widgets/custom_text_form_field.dart';
 class StaticScreen extends StatelessWidget {
   StaticScreen({Key? key}) : super(key: key);
 
-  final streamUrlController = Get.find<StreamUrlController>();
   TextEditingController ipnetworkvalueController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool _passwordVisible = false;
+
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ApiService apiService = ApiService();
 
@@ -88,44 +87,31 @@ class StaticScreen extends StatelessWidget {
             contentPadding: EdgeInsets.only(top: 0.v),
           ),
           SizedBox(height: 10.v),
-          StatefulBuilder(builder:
-              (BuildContext context, void Function(void Function()) setState) {
-            return CustomTextFormField(
-              controller: passwordController,
-              hintText: "Password",
-              textInputAction: TextInputAction.done,
-              textInputType: TextInputType.visiblePassword,
-              prefix: Container(
-                margin: EdgeInsets.only(
-                  left: 3.h,
-                  right: 25.h,
-                  bottom: 10.v,
-                ),
-                child: Icon(
-                  Icons.lock,
-                  color: Colors.white,
-                  size: 28.h,
-                ),
+          CustomTextFormField(
+            controller: passwordController,
+            hintText: "Password",
+            textInputAction: TextInputAction.done,
+            textInputType: TextInputType.visiblePassword,
+            prefix: Container(
+              margin: EdgeInsets.only(
+                left: 3.h,
+                right: 25.h,
+                bottom: 10.v,
               ),
-              prefixConstraints: BoxConstraints(maxHeight: 53.v),
-              suffix: IconButton(
-                icon: Icon(
-                  // Based on passwordVisible state choose the icon
-                  _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
-                ),
-                onPressed: () {
-                  // Update the state i.e. toogle the state of passwordVisible variable
-                  setState(() {
-                    _passwordVisible = !_passwordVisible;
-                  });
-                },
+              child: Icon(
+                Icons.lock,
+                color: Colors.white,
+                size: 28.h,
               ),
-//               obscureText: !_passwordVisible,
-              obscureText: !_passwordVisible,
-              contentPadding: EdgeInsets.only(top: 10),
-            );
-          }),
+            ),
+            prefixConstraints: BoxConstraints(maxHeight: 53.v),
+            suffix: Icon(
+              Icons.visibility_off_outlined,
+              color: Colors.white,
+            ),
+            obscureText: true,
+            contentPadding: EdgeInsets.only(top: 0.v),
+          ),
           SizedBox(height: 25.v),
           _buildConnectButton(context)
         ],
@@ -133,7 +119,7 @@ class StaticScreen extends StatelessWidget {
     );
   }
 
-
+  final streamUrlController = Get.put(StreamUrlController());
 
   Widget _buildConnectButton(BuildContext context) {
     return CustomElevatedButton(
@@ -156,14 +142,12 @@ class StaticScreen extends StatelessWidget {
           );
 
           if (response.statusCode == 200 || response.statusCode == 201) {
-            final streamUrlsResponse =
-            await apiService.getStreamUrl("static"); // or "ddns"
+            final streamUrlsResponse = await apiService.getStreamUrl("static"); // or "ddns"
             final urls = streamUrlsResponse.streamUrls;
-            urls.forEach((url) => streamUrlController.addCamera(url as String));
-            showSnackBar(jsonDecode(response.body)['message'], context);
+            streamUrlController.streamUrls.addAll(urls.map((url) => url.url).toList());showSnackBar(jsonDecode(response.body)['message'], context);
             Navigator.pop(context);
           } else {
-            showSnackBar("Error: ${response.statusCode} - ${response.body}", context);
+            showSnackBar("Something went wrong.", context);
             Navigator.pop(context);
           }
         } catch (e) {

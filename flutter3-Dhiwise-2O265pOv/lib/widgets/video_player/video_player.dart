@@ -35,13 +35,12 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
 
   final streamUrlController = Get.put(StreamUrlController());
   void _initializeWebSocket() {
-    final wsUrl =
-        '${widget.webSocketUrl}?token=${widget.authToken}'; // Include token in the URL
+    final wsUrl = '${widget.webSocketUrl}?token=${widget.authToken}'; // Include token in the URL
     print('Initializing WebSocket with URL: $wsUrl');
     try {
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
       _channel.stream.listen(
-        (message) {
+            (message) {
           final data = jsonDecode(message);
           setState(() {
             if (data['frame'] != null) {
@@ -52,7 +51,7 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
             }
             if (data['detected_faces'] != null) {
               _detectedFaces =
-                  List<Map<String, dynamic>>.from(data['detected_faces']);
+              List<Map<String, dynamic>>.from(data['detected_faces']);
             }
           });
         },
@@ -62,6 +61,7 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
             isError = true;
             errorMessage = error.toString();
           });
+          _reconnectWebSocket();
         },
         onDone: () {
           print('WebSocket connection closed.');
@@ -69,6 +69,7 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
             isError = true;
             errorMessage = 'WebSocket connection closed.';
           });
+          _reconnectWebSocket();
         },
       );
     } catch (e) {
@@ -77,8 +78,18 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
         isError = true;
         errorMessage = e.toString();
       });
+      _reconnectWebSocket();
     }
   }
+
+  void _reconnectWebSocket() {
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        _initializeWebSocket();
+      }
+    });
+  }
+
 
   // @override
   // Widget build(BuildContext context) {
@@ -148,7 +159,7 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 250, // Adjust this height as needed
+      height: 240, // Adjust this height as needed
       child: Center(
         child: isError
             ? Column(
