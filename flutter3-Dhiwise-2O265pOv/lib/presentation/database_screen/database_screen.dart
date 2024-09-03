@@ -48,19 +48,48 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Rename Face"),
+        backgroundColor: Colors.grey[900], // Background color of the AlertDialog
+        title: Text(
+          "Rename Face",
+          style: TextStyle(color: Colors.orange), // Title text color
+        ),
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(hintText: "Enter new name"),
+          decoration: InputDecoration(
+            hintText: "Enter new name",
+            filled: true,
+            hintStyle: TextStyle(color: Colors.white54), // Hint text color
+            fillColor: Colors.grey[800], // Background color of the TextField
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.orange), // Border color
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.blueGrey, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.blue, width: 2), // Border color when focused
+            ),
+          ),
+          cursorColor: Colors.orange,
+          style: TextStyle(color: Colors.white), // Text color inside TextField
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("Cancel"),
+            child: Text(
+              "Cancel",
+              style: TextStyle(color: Colors.orange), // Cancel button text color
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(controller.text),
-            child: Text("Save"),
+            child: Text(
+              "Save",
+              style: TextStyle(color: Colors.orange), // Save button text color
+            ),
           ),
         ],
       ),
@@ -83,7 +112,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey[900],
         body: Column(
           children: [
             SizedBox(height: 39),

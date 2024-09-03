@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import '../model/face_data.dart';
 import '../model/stream_urls.dart';
 import '../model/camera_user_detected.dart';
 import '../services/shared_services.dart';
@@ -241,7 +242,12 @@ class ApiService {
     final token = UserSharedServices.loginDetails()!.accessToken;
     String queryString = '';
     if (date != null && month != null && year != null) {
+      // Correctly format the date as YYYY-MM-DD
       queryString = '?date=$year-$month-$date';
+    } else if (month != null && year != null) {
+      queryString = '?month=$month&year=$year';
+    } else if (year != null) {
+      queryString = '?year=$year';
     }
     final response = await http.get(
       Uri.parse('$_baseUrl/camera/faces/$queryString'),
@@ -274,7 +280,7 @@ class ApiService {
   Future<bool> renameFace(int faceId, String newName) async {
     final token = UserSharedServices.loginDetails()!.accessToken;
     final response = await http.patch(
-      Uri.parse('$_baseUrl/camera/rename-face/Unknown_$faceId/'),
+      Uri.parse('$_baseUrl/camera/rename-face/$faceId/'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -296,32 +302,33 @@ class ApiService {
     );
     return response.statusCode == 200;
   }
-}
 
-Future<Map<String, double>> fetchData() async {
-  try {
-    ApiService apiService = ApiService();
-    final response = await apiService.getStreamUrl("cameraType");
-
-    if (response != null) {
-      Map<String, dynamic> data = jsonDecode(response.toString());
-      if (data.containsKey('known') && data.containsKey('unknown')) {
-        return {
-          "Known": data['known'].toDouble(),
-          "Unknown": data['unknown'].toDouble(),
-        };
-      } else {
-        // Return an error state data map if keys are missing
-        return {"Error": 100.0};
-      }
-    } else {
-      // Return an error state data map if response is null
-      return {"Error": 100.0};
+  Future<FaceData> getFaceAnalytics() async {
+    final token = UserSharedServices.loginDetails()?.accessToken;
+    if (token == null) {
+      throw Exception("Access token is null");
     }
-  } catch (e) {
-    // Return an error state data map on exception
-    return {"Error": 100.0};
-  }
-}
 
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/camera/face-analytics/'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return FaceData.fromJson(json.decode(response.body));
+      } else {
+        final errorResponse = json.decode(response.body);
+        log('Error: ${errorResponse['detail'] ?? 'Unknown error'}');
+        throw Exception('Failed to load face analytics data: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('Error fetching face analytics data: $e');
+      throw Exception('Failed to load face analytics data');
+    }
+  }
+
+}
 
