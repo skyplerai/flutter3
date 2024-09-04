@@ -1,4 +1,3 @@
-///lib/presentation/database_screen.dart
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -40,6 +39,36 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     } catch (e) {
       print('Error fetching faces: $e');
       // Consider showing an error message to the user
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000), // Set the earliest date that can be picked
+      lastDate: DateTime.now(),  // Set the latest date that can be picked
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: Colors.orange, // Header background color
+              onPrimary: Colors.black, // Header text color
+              surface: Colors.grey[900]!, // Background color
+              onSurface: Colors.orange, // Text color
+            ),
+            dialogBackgroundColor: Colors.grey[800], // Popup background color
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        fetchDetectedFaces(); // Refresh the detected faces based on the new date
+      });
     }
   }
 
@@ -150,62 +179,31 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildDateDropdown(),
-          _buildMonthDropdown(),
-          _buildYearDropdown(),
+          TextButton(
+            onPressed: () => _selectDate(context),
+            child: Text(
+              DateFormat('dd MMMM yyyy').format(selectedDate),
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 26, vertical: 8),
+              backgroundColor: Colors.orange,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDateDropdown() {
-    return CustomDropDown(
-      width: 70,
-      hintText: selectedDate.day.toString().padLeft(2, '0'),
-      items: List.generate(31, (index) => (index + 1).toString().padLeft(2, '0')),
-      onChanged: (value) {
-        setState(() {
-          selectedDate = DateTime(selectedDate.year, selectedDate.month, int.parse(value));
-          fetchDetectedFaces();
-        });
-      },
-    );
-  }
-
-  Widget _buildMonthDropdown() {
-    return CustomDropDown(
-      width: 140,
-      hintText: DateFormat('MMMM').format(selectedDate),
-      items: DateFormat.MMMM().dateSymbols.MONTHS,
-      onChanged: (value) {
-        setState(() {
-          selectedDate = DateTime(selectedDate.year, DateFormat.MMMM().dateSymbols.MONTHS.indexOf(value) + 1, selectedDate.day);
-          fetchDetectedFaces();
-        });
-      },
-    );
-  }
-
-  Widget _buildYearDropdown() {
-    return CustomDropDown(
-      width: 95,
-      hintText: selectedDate.year.toString(),
-      items: List.generate(10, (index) => (DateTime.now().year - index).toString()),
-      onChanged: (value) {
-        setState(() {
-          selectedDate = DateTime(int.parse(value), selectedDate.month, selectedDate.day);
-          fetchDetectedFaces();
-        });
-      },
     );
   }
 
   Widget _buildDetectedFacesList() {
     return Expanded(
       child: detectedFaces.isEmpty
-          ? Center(child: Text("No detected faces", style: TextStyle(color: Colors.white)))
+          ? Center(child: Text("No detected faces", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)))
           : ListView.builder(
         itemCount: detectedFaces.length,
         itemBuilder: (context, index) {
