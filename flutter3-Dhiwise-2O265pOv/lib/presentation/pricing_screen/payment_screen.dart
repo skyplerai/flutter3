@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:upi_india/upi_india.dart';
 
 class UpiTransactionPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
     final Map<UpiApp, String> appNames = {
       UpiApp.googlePay: 'Google Pay',
       UpiApp.phonePe: 'PhonePe',
-      UpiApp.paytm: 'Paytm',
+      UpiApp.bhim: 'BHIM',
       UpiApp.amazonPay: 'Amazon Pay',
       // Add other supported apps and their names as needed
     };
@@ -33,45 +34,49 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.white, // Customize dialog background color
           child: Container(
-            height: 300, // Set the height of the dialog
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Select UPI App',
-                    style: TextStyle(
-                      color: Colors.white, // Title text color
-                      fontSize: 20, // Title font size
-                      fontWeight: FontWeight.w700, // Title font weight
-                    ),
+            height: 350, // Set the height of the dialog
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Select UPI App',
+                  style: TextStyle(
+                    color: Colors.orange, // Title text color
+                    fontSize: 22, // Title font size
+                    fontWeight: FontWeight.bold, // Title font weight
                   ),
-                  SizedBox(height: 20),
-                  Expanded(
-                    child: ListView(
-                      children: appNames.entries.map((entry) {
-                        return ListTile(
-                          title: Text(
-                            entry.value, // Display the app name
-                            style: TextStyle(color: Colors.white), // Text color
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pop(entry.key); // Return the selected UPI app
-                          },
-                        );
-                      }).toList(),
-                    ),
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    children: appNames.entries.map((entry) {
+                      return ListTile(
+                        leading: Image(
+                            image: AssetImage('assets/icons/${entry.key.name}.png'),
+                          width: 30.0, // Custom width from the map
+                        ),
+                        title: Text(
+                          '${entry.value}       >',
+                          style: TextStyle(color: Colors.black,
+                          fontWeight: FontWeight.w800), // Text color
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(entry.key); // Return the selected UPI app
+                        },
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
       },
     );
+
 
     if (selectedUpiApp != null) {
       setState(() {
@@ -79,9 +84,6 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
       });
     }
   }
-
-
-
 
   Future<void> _initiateTransaction() async {
     if (_selectedUpiApp == null) {
@@ -91,31 +93,14 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
     if (_selectedUpiApp != null) {
       _upiResponse = await _upiIndia.startTransaction(
         app: _selectedUpiApp!,
-        receiverUpiId: 'your-upi-id@bank', // Replace with the actual receiver UPI ID
-        receiverName: 'The Third Eye', // Replace with the receiver's name
-        transactionRefId: 'TXNID12345', // Unique transaction ID
-        transactionNote: 'Payment for Full access of the Third Eye App', // Note for the payment
-        amount: 399.0, // The fixed amount to be paid
+        receiverUpiId: 'your-upi-id@bank',
+        receiverName: 'The Third Eye',
+        transactionRefId: 'TXNID12345',
+        transactionNote: 'Payment for Full access of the Third Eye App',
+        amount: 399.0,
       );
 
       setState(() {});
-    }
-  }
-
-  String _getTransactionStatus(UpiResponse? response) {
-    if (response == null) {
-      return 'Transaction Failed';
-    }
-
-    switch (response.status) {
-      case UpiPaymentStatus.SUCCESS:
-        return 'Transaction Successful';
-      case UpiPaymentStatus.SUBMITTED:
-        return 'Transaction Submitted';
-      case UpiPaymentStatus.FAILURE:
-        return 'Transaction Failed';
-      default:
-        return 'Received an Unknown status';
     }
   }
 
@@ -126,15 +111,14 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
         title: Text(
           'UPI Payment',
           style: TextStyle(
-            color: Colors.white, // Title text color
-            fontSize: 24, // Title font size
-            fontWeight: FontWeight.bold, // Title font weight
-            fontFamily: 'Roboto', // Custom font family, ensure it's added in pubspec.yaml
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.orange,
         iconTheme: IconThemeData(
-          color: Colors.white, // Back button color
+          color: Colors.white,
         ),
       ),
       body: Stack(
@@ -144,7 +128,7 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisSize: MainAxisSize.min, // This keeps the column centered
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildPaymentDetails(),
                   SizedBox(height: 30),
@@ -159,7 +143,11 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
                     ),
                     child: Text(
                       'Pay ₹399 via UPI',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -216,7 +204,10 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Icon(Icons.account_balance_wallet, size: 50, color: Colors.lightBlue),
+            Image.asset(
+              'assets/icons/Rupee_icon.png',  // Path to your PNG asset
+              width: 50.0,       // This only works with monochrome PNGs (i.e., white PNGs)
+            ),
             SizedBox(height: 20),
             Text(
               'Receiver: The Third Eye',
@@ -241,5 +232,22 @@ class _UpiTransactionPageState extends State<UpiTransactionPage> {
         ),
       ),
     );
+  }
+
+  String _getTransactionStatus(UpiResponse? response) {
+    if (response == null) {
+      return 'Transaction Failed';
+    }
+
+    switch (response.status) {
+      case UpiPaymentStatus.SUCCESS:
+        return 'Transaction Successful';
+      case UpiPaymentStatus.SUBMITTED:
+        return 'Transaction Submitted';
+      case UpiPaymentStatus.FAILURE:
+        return 'Transaction Failed';
+      default:
+        return 'Received an Unknown status';
+    }
   }
 }

@@ -80,30 +80,6 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-
-
-  ///Section Widget
-
-
-
-  /// Section Widget
-  Widget _buildColumn(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onTapColumn(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 7.v),
-        padding: EdgeInsets.symmetric(horizontal: 27.h),
-        child: CustomImageView(
-          imagePath: ImageConstant.imgGroup,
-          height: 50.v,
-          width: 374.h,
-        ),
-      ),
-    );
-  }
 
   /// Navigates back to the previous screen.
   onTapArrowleftone(BuildContext context) {

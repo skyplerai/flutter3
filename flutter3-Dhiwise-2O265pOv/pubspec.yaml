@@ -39,6 +39,11 @@ flutter:
     - assets/
     - assets/images/
     - assets/screen_shots/
+    - assets/icons/
+    - assets/icons/PhonePe.png
+    - assets/icons/Amazon Pay.png
+    - assets/icons/Google Pay.png
+    - assets/icons/BHIM.png
   fonts:
     - family: Poppins
       fonts:
