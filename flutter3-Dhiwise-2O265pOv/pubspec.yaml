@@ -26,6 +26,9 @@ dependencies:
   flutter_secure_storage:
   http:
   flutter_vlc_player:
+  image_picker:
+  csc_picker:
+  intl_phone_field:
 
   google_sign_in:
 

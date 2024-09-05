@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sriram_s_application3/constants/snack_bar.dart';
 import 'package:sriram_s_application3/presentation/faq/faq_screen.dart';
 import 'package:sriram_s_application3/presentation/help_support/help_support.dart';
+import 'package:sriram_s_application3/presentation/settings_screen/user_profile_editable%20page.dart';
 
 import '../../Services/shared_services.dart';
 import '../../core/app_export.dart';
@@ -50,9 +51,22 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${UserSharedServices.loginDetails()!.userInfo!.username}",
-                          style: CustomTextStyles.titleMediumSemiBold,
+                        Row(
+                          children: [
+                            Text(
+                              "${UserSharedServices.loginDetails()!.userInfo!.username}",
+                              style: CustomTextStyles.titleMediumSemiBold,
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.white),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => UserProfileEditPage()),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
