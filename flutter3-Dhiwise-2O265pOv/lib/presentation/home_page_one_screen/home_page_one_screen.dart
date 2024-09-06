@@ -26,23 +26,43 @@ class HomePageOneScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         return await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                  content: const Text('Do you want to exit the app?'),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text('Yes')),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('No'))
-                  ]);
-            });
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[900], // Background color of the dialog
+              title: Text(
+                'Do you want to exit the app?',
+                style: TextStyle(color: Colors.grey), // Text color of the dialog
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange, // Button background color
+                  ),
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.white), // Text color for 'Yes' button
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.orange, // Text button background color
+                  ),
+                  child: Text(
+                    'No',
+                    style: TextStyle(color: Colors.orange), // Text color for 'No' button
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       },
       child: GetBuilder<StreamUrlController>(
           init: StreamUrlController(),
@@ -78,7 +98,7 @@ class HomePageOneScreen extends StatelessWidget {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15.v),
                                       child: WebSocketVideoPlayer(
-                                        webSocketUrl: streamUrlController.streamUrls[index] ?? '',
+                                        webSocketUrl: streamUrlController.streamUrls[index],
                                         authToken: UserSharedServices.loginDetails()?.accessToken ?? '',
                                       ),
                                     ),

@@ -34,7 +34,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _updateCompletionPercentage();
   }
 
   Future<void> _loadUserData() async {
@@ -42,7 +41,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
     if (user != null && user.userInfo != null) {
       setState(() {
         _usernameController.text = user.userInfo!.username ?? '';
-        _updateCompletionPercentage();
       });
     }
   }
@@ -52,21 +50,10 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
     if (pickedFile != null) {
       setState(() {
         _profileImage = File(pickedFile.path);
-        _updateCompletionPercentage();
       });
     }
   }
 
-  void _updateCompletionPercentage() {
-    int filledFields = 0;
-    if (_usernameController.text.isNotEmpty) filledFields++;
-    if (_locationController.text.isNotEmpty) filledFields++;
-    if (_profileImage != null) filledFields++;
-
-    setState(() {
-      _completionPercentage = (filledFields / 3) * 100;
-    });
-  }
 
   void _saveProfileData() async {
     // Implement the logic to save the updated profile details
@@ -163,7 +150,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                     borderSide: BorderSide(color: Colors.grey, width: 1.0),
                   ),
                 ),
-                onChanged: (value) => _updateCompletionPercentage(),
               ),
               SizedBox(height: 20),
               IntlPhoneField(
@@ -196,11 +182,9 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 },
                 onStateChanged: (state) {
                   _locationController.text = state ?? '';
-                  _updateCompletionPercentage();
                 },
                 onCityChanged: (city) {
                   _locationController.text = city ?? '';
-                  _updateCompletionPercentage();
                 },
                 showStates: true,
                 showCities: true,
@@ -214,17 +198,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 dropdownItemStyle: TextStyle(color: Colors.orange), // Dropdown item text color
-              ),
-              SizedBox(height: 20),
-              LinearProgressIndicator(
-                value: _completionPercentage / 100,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              ),
-              SizedBox(height: 10),
-              Text(
-                '${_completionPercentage.toInt()}% Complete',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
               ElevatedButton(
