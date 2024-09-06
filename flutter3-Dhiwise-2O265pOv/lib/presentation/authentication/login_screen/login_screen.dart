@@ -52,8 +52,8 @@ class LoginScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           Positioned(
-                            bottom: 80,
-                            left: 275,
+                            bottom: 90,
+                            left: 250,
                             child: Text(
                               "Welcome\nBack",
                               style: TextStyle(
@@ -79,13 +79,13 @@ class LoginScreen extends StatelessWidget {
                       ),
                     )),
                 Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 300),
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 260),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 4.v),
                       _buildSignInWithSection(context),
-                      SizedBox(height: 26.v),
+                      SizedBox(height: 20.v),
                       dividerOfOr(context),
                       SizedBox(height: 25.v),
                       _buildEmailSection(context),
@@ -347,18 +347,39 @@ class LoginScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildSignUpSection(BuildContext context) {
-    return CustomOutlinedButton(
-      text: "Sign up",
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CreateAccountScreen()));
-      },
-      decoration: BoxDecoration(
-          color: mainColor, borderRadius: BorderRadius.circular(35)),
-      margin: EdgeInsets.only(
-        left: 52.h,
-        right: 50.h,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 10.0), // Adjust spacing as needed
+          child: Text(
+            "Don't have an account?",
+            style: TextStyle(
+              color: Colors.white, // Adjust color if needed
+              fontSize: 16.0, // Adjust font size if needed
+              fontWeight: FontWeight.bold, // Adjust font weight if needed
+            ),
+          ),
+        ),
+        CustomOutlinedButton(
+          text: "Sign up",
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateAccountScreen()),
+            );
+          },
+          decoration: BoxDecoration(
+            color: mainColor,
+            borderRadius: BorderRadius.circular(35),
+          ),
+          margin: EdgeInsets.only(
+            left: 52.h,
+            right: 50.h,
+          ),
+        ),
+      ],
     );
   }
+
 }

@@ -1,25 +1,27 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Add this import for handling links
+
 import 'package:sriram_s_application3/Services/api_service.dart';
 import 'package:sriram_s_application3/core/app_export.dart';
 
 import '../../../constants/style.dart';
 import '../../../widgets/custom_outlined_button.dart';
 import '../../../widgets/custom_text_form_field.dart';
+import 'TermsAndConditionsCheckbox.dart';
 
-// ignore_for_file: must_be_immutable
-class CreateAccountScreen extends StatelessWidget {
-  CreateAccountScreen({Key? key})
-      : super(
-          key: key,
-        );
+class CreateAccountScreen extends StatefulWidget {
+  @override
+  _CreateAccountScreenState createState() => _CreateAccountScreenState();
+}
 
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController nameEditTextController = TextEditingController();
-
   TextEditingController emailEditTextController = TextEditingController();
-
   TextEditingController passwordEditTextController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isChecked = false; // Checkbox state
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,8 @@ class CreateAccountScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           Positioned(
-                            bottom: 80,
-                            left: 275,
+                            bottom: 90,
+                            left: 250,
                             child: Text(
                               "Create\nAccount",
                               style: TextStyle(
@@ -55,18 +57,6 @@ class CreateAccountScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          Positioned(
-                              top: 375,
-                              left: 230,
-                              child: IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white,
-                                    size: 40,
-                                  )))
                         ],
                       ),
                     )),
@@ -84,23 +74,21 @@ class CreateAccountScreen extends StatelessWidget {
                       _buildEmailEditText(context),
                       SizedBox(height: 21.v),
                       _buildPasswordEditText(context),
-                      // SizedBox(height: 14.v),
-                      // Align(
-                      //   alignment: Alignment.centerRight,
-                      //   child: Padding(
-                      //     padding: EdgeInsets.only(right: 3.h),
-                      //     child: Text(
-                      //       "Forgot password?",
-                      //       style: CustomTextStyles.bodyLargePrimary,
-                      //     ),
-                      //   ),
-                      // ),
+                      SizedBox(height: 21.v),
+                      TermsAndConditionsCheckbox(
+                        isChecked: _isChecked,
+                        onChanged: (value) {
+                          setState(() {
+                            _isChecked = value;
+                          });
+                        },
+                      ),
                       SizedBox(height: 21.v),
                       _buildSignUpButton(context),
                       SizedBox(height: 30.v),
                       dividerOfOr(context),
                       SizedBox(height: 30.v),
-                      _buildLoginButton(context)
+                      _buildLoginButton(context),
                     ],
                   ),
                 )
@@ -112,25 +100,21 @@ class CreateAccountScreen extends StatelessWidget {
     );
   }
 
-  Widget dividerOfOr(context) {
+  Widget dividerOfOr(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.40,
-          child: Expanded(
-            child: Divider(
-              color: Colors.white,
-            ),
+        Expanded(
+          child: Divider(
+            color: Colors.white,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text("OR"),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.40,
+        Expanded(
           child: Divider(
             color: Colors.white,
           ),
@@ -139,7 +123,6 @@ class CreateAccountScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
   Widget _buildSignInWithGoogleButton(BuildContext context) {
     return CustomOutlinedButton(
       text: "Sign in with Google",
@@ -161,48 +144,6 @@ class CreateAccountScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-  Widget _buildStackLine(BuildContext context) {
-    return SizedBox(
-      height: 24.v,
-      width: 399.h,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 9.v),
-              child: SizedBox(
-                width: 399.h,
-                child: Divider(),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 18.v,
-              width: 36.h,
-              margin: EdgeInsets.only(bottom: 1.v),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "OR",
-              style: CustomTextStyles.bodyLargeSecondaryContainer,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
   Widget _buildNameEditText(BuildContext context) {
     return CustomTextFormField(
       controller: nameEditTextController,
@@ -213,10 +154,15 @@ class CreateAccountScreen extends StatelessWidget {
         size: 30,
       ),
       contentPadding: EdgeInsets.only(right: 30.h, top: 10.h),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a username';
+        }
+        return null;
+      },
     );
   }
 
-  /// Section Widget
   Widget _buildEmailEditText(BuildContext context) {
     return CustomTextFormField(
       controller: emailEditTextController,
@@ -228,10 +174,18 @@ class CreateAccountScreen extends StatelessWidget {
         size: 30,
       ),
       contentPadding: EdgeInsets.only(right: 30.h, top: 10.h),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter an email address';
+        }
+        if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+          return 'Please enter a valid email address';
+        }
+        return null;
+      },
     );
   }
 
-  /// Section Widget
   Widget _buildPasswordEditText(BuildContext context) {
     return CustomTextFormField(
       controller: passwordEditTextController,
@@ -245,16 +199,51 @@ class CreateAccountScreen extends StatelessWidget {
       ),
       contentPadding: EdgeInsets.only(right: 30.h, top: 10.h),
       obscureText: true,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a password';
+        }
+        if (value.length < 8) {
+          return 'Password must be at least 8 characters long';
+        }
+        if (!RegExp(r'\d').hasMatch(value)) {
+          return 'Password must contain at least one digit';
+        }
+        if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+          return 'Password must contain at least one special character';
+        }
+        return null;
+      },
     );
   }
 
+
   ApiService apiService = ApiService();
 
-  /// Section Widget
   Widget _buildSignUpButton(BuildContext context) {
     return CustomOutlinedButton(
       text: "Sign up",
       onPressed: () async {
+        if (!_formKey.currentState!.validate()) {
+          // If form validation fails, show all errors in a single SnackBar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Please fix the errors in the form.'),
+              backgroundColor: Colors.black,
+            ),
+          );
+          return;
+        }
+
+        if (!_isChecked) {
+          // Show error if checkbox is not checked
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please agree to the Terms and Conditions')),
+          );
+          return;
+        }
+
+        // Proceed with registration if both form is valid and checkbox is checked
         await apiService.register(
           context,
           email: emailEditTextController.text,
@@ -271,45 +260,7 @@ class CreateAccountScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-  Widget _buildStackLineOne(BuildContext context) {
-    return SizedBox(
-      height: 24.v,
-      width: 399.h,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 399.h,
-              child: Divider(),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: 18.v,
-              width: 36.h,
-              margin: EdgeInsets.only(top: 2.v),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "OR",
-              style: CustomTextStyles.bodyLargeSecondaryContainer,
-            ),
-          )
-        ],
-      ),
-    );
-  }
 
-  /// Section Widget
   Widget _buildLoginButton(BuildContext context) {
     return CustomOutlinedButton(
       width: 300.h,
@@ -325,28 +276,13 @@ class CreateAccountScreen extends StatelessWidget {
       },
     );
   }
-}
 
-Widget _buildTermsAndConditionsCheckbox(BuildContext context) {
-  bool _isChecked = false;
-
-  return Row(
-    children: [
-      Checkbox(
-        value: _isChecked,
-        onChanged: (bool? value) {
-          _isChecked = value!;
-        },
-      ),
-      Expanded(
-        child: Text(
-          "I agree to the Terms and Services",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    ],
-  );
+  // Helper method to launch URL
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }

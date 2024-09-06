@@ -12,24 +12,15 @@ class VerifyEmailScreen extends StatefulWidget {
 
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   final otpController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ApiService.emailVerify(context, otp: otpController.text);
-        },
-        backgroundColor: mainColor,
-        child: Icon(
-          Icons.arrow_forward_ios,
-          color: Colors.white,
-        ),
-      ),
       appBar: AppBar(
         backgroundColor: appTheme.black900,
         title: Text(
-          "Verify email",
+          "Verify Email",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -43,19 +34,67 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(8.h),
-        child: Center(
-          child: Pinput(
-            controller: otpController,
-            length: 6,
-            defaultPinTheme: PinTheme(
-                height: 55.h,
-                width: 60.v,
-                decoration: BoxDecoration(
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Enter the verification code sent to your email",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 20),
+            Form(
+              key: _formKey,
+              child: Pinput(
+                controller: otpController,
+                length: 6,
+                defaultPinTheme: PinTheme(
+                  height: 55,
+                  width: 55,
+                  decoration: BoxDecoration(
                     color: theme.colorScheme.onBackground,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300))),
-          ),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                ),
+                focusedPinTheme: PinTheme(
+                  height: 55,
+                  width: 55,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.length != 6) {
+                    return 'Enter a valid 6-digit code';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  ApiService.emailVerify(context, otp: otpController.text);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: mainColor,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                "Verify",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ],
         ),
       ),
     );
