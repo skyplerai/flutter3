@@ -188,51 +188,77 @@ class ApiService {
   Future<bool> sendOtpToEmail(BuildContext context, {String? email}) async {
     var headers = {'Content-Type': 'application/json'};
     bool returnValue = false;
-    final response = await http.post(
+    try {
+      print("Sending OTP request to $_baseUrl/auth/request-reset-password/");
+      final response = await http.post(
         Uri.parse('$_baseUrl/auth/request-reset-password/'),
         body: jsonEncode({"email": email}),
-        headers: headers);
-    if (response.statusCode == 200 || response.statusCode == 201) {
+        headers: headers,
+      );
+      print("Response status code: ${response.statusCode}");
+      print("Response body: ${response.body}");
+
       final data = jsonDecode(response.body);
-      if (data['success'] != null) {
-        showSnackBar(data['success'], context);
-      }
-      returnValue = true;
-    } else {
-      final data = jsonDecode(response.body);
-      if (data['error'] != null) {
-        showSnackBar(data['error'], context);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (data['success'] != null) {
+          showSnackBar(data['success'], context);
+        }
+        returnValue = true;
       } else {
-        showSnackBar("Something went wrong.", context);
+        if (data['error'] != null) {
+          // Handle the case where 'error' is a List
+          if (data['error'] is List) {
+            showSnackBar(data['error'].join(", "), context);
+          } else {
+            showSnackBar(data['error'].toString(), context);
+          }
+        } else {
+          showSnackBar("Something went wrong. Status code: ${response.statusCode}", context);
+        }
       }
+    } catch (e) {
+      print("Error sending OTP: $e");
+      showSnackBar("An error occurred while sending OTP: $e", context);
     }
     return returnValue;
   }
 
-  Future<http.Response> createNewPassword(BuildContext context,
-      {String? otp,
-        String? password,
-        String? email,
-        String? confirmPassword}) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/auth/set-new-password/'),
-      body: jsonEncode({
-        "email": email,
-        "otp": otp,
-        "new_password": password,
-        "confirm_password": confirmPassword
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      Navigator.pushNamed(context, AppRoutes.loginScreen);
-      showSnackBar(data['success'], context);
-    } else {
-      showSnackBar("Something went wrong.", context);
+
+  Future<Map<String, dynamic>> createNewPassword(BuildContext context, {
+    required String email,
+    required String new_password,
+    required String confirmPassword,
+    required String otp,
+  }) async {
+    try {
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/auth/reset-password/'),
+        body: {
+          'email': email,
+          'new_password': new_password,
+          'confirm_password': confirmPassword,
+          'otp': otp,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Handle successful response
+        showSnackBar("Password updated successfully!", context);
+        return {'success': true, 'message': 'Password updated successfully'};
+      } else {
+        // Log the error response
+        print('Error: ${response.body}');
+        showSnackBar("Something went wrong: ${response.body}", context);
+        return {'success': false, 'message': response.body};
+      }
+    } catch (e) {
+      print('Exception: $e');
+      showSnackBar("An error occurred. Please try again later.", context);
+      return {'success': false, 'message': 'An error occurred'};
     }
-    return response;
   }
+
 
   Future<CameraDetectedUsers> getDetectedFaces({
     String? date,

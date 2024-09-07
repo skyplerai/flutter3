@@ -62,7 +62,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   height: 55,
                   width: 55,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
+                    color: Colors.orange,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
