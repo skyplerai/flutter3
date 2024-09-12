@@ -11,7 +11,7 @@ import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 
 class StaticScreen extends StatelessWidget {
-  StaticScreen({Key? key}) : super(key: key);
+  StaticScreen({Key? key, required Null Function(dynamic url) onStreamAdded}) : super(key: key);
 
   TextEditingController ipnetworkvalueController = TextEditingController();
   TextEditingController usernameController = TextEditingController();

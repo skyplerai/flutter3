@@ -107,7 +107,7 @@ class _CameraStreamScreenState extends State<CameraStreamScreen> {
     );
     if (newName != null && newName.isNotEmpty) {
       try {
-        await apiService.renameFace(face.id, newName);
+        await apiService.renameFace(oldFaceId:face.faceId, newFaceId: newName,);
         setState(() {
           final index = detectedFaces.indexWhere((f) => f.id == face.id);
           if (index != -1) {

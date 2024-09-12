@@ -126,16 +126,32 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
 
     if (newName != null && newName.isNotEmpty) {
       try {
-        final success = await apiService.renameFace(face.id!, newName);
+        final success = await apiService.renameFace(
+          oldFaceId: face.faceId!,
+          newFaceId: newName,
+        );
+
         if (success) {
           fetchDetectedFaces();
+        } else {
+          _showSnackBar(context, 'Failed to rename face.');
         }
       } catch (e) {
-        print('Error renaming face: $e');
-        // Consider showing an error message to the user
+        _showSnackBar(context, 'Error renaming face: $e');
       }
     }
   }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red, // Optional: Red color for error
+        duration: Duration(seconds: 3), // Optional: Adjust duration
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {

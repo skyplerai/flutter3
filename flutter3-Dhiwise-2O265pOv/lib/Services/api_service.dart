@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../model/face_data.dart';
+import '../model/notification_logs.dart';
 import '../model/stream_urls.dart';
 import '../model/camera_user_detected.dart';
 import '../services/shared_services.dart';
@@ -303,15 +304,18 @@ class ApiService {
     }
   }
 
-  Future<bool> renameFace(int faceId, String newName) async {
+  Future<bool> renameFace({required String? oldFaceId, required String? newFaceId}) async {
     final token = UserSharedServices.loginDetails()!.accessToken;
-    final response = await http.patch(
-      Uri.parse('$_baseUrl/camera/rename-face/$faceId/'),
+    final response = await http.post(
+      Uri.parse('$_baseUrl/camera/rename-face/'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'name': newName}),
+      body: jsonEncode({
+        'old_face_id': oldFaceId,
+        'new_face_id': newFaceId,
+      }),
     );
     return response.statusCode == 200;
   }
@@ -353,6 +357,30 @@ class ApiService {
     } catch (e) {
       log('Error fetching face analytics data: $e');
       throw Exception('Failed to load face analytics data');
+    }
+  }
+
+  Future<NotificationLogResponse?> fetchNotificationLogs() async {
+    final token = UserSharedServices.loginDetails()?.accessToken;
+
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/camera/notifications/'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return NotificationLogResponse.fromJson(json.decode(response.body));
+      } else {
+        print('Failed to load notification logs');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching notification logs: $e');
+      return null;
     }
   }
 

@@ -18,7 +18,6 @@ import '../../widgets/video_player/video_player.dart';
 class HomePageOneScreen extends StatelessWidget {
   HomePageOneScreen({Key? key}) : super(key: key);
 
-  int? selectedIndex;
   final streamUrlController = Get.put(StreamUrlController());
 
   @override
@@ -139,7 +138,11 @@ class HomePageOneScreen extends StatelessWidget {
                                                     return AlertDialog(
                                                       backgroundColor:
                                                       Colors.black,
-                                                      content: StaticScreen(),
+                                                      content: StaticScreen(
+                                                        onStreamAdded: (url){
+                                                          streamUrlController.addNewStream(url);
+                                                        }
+                                                      ),
                                                     );
                                                   });
                                             },

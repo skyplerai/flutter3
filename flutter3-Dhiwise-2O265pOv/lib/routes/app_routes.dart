@@ -67,7 +67,7 @@ class AppRoutes {
     loginScreen: (context) => LoginScreen(),
     createAccountScreen: (context) => CreateAccountScreen(),
     connectCctvScreen: (context) => ConnectCctvScreen(),
-    staticScreen: (context) => StaticScreen(),
+    staticScreen: (context) => StaticScreen(onStreamAdded: (url) {  },),
     ddnsScreen: (context) => DdnsScreen(),
     homePageOneScreen: (context) => HomePageOneScreen(),
     homePageTwoScreen: (context) => HomePageTwoScreen(),

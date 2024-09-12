@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sriram_s_application3/widgets/video_player/video_player.dart';
 
 import 'Services/provider.dart';
 import 'constants/snack_bar.dart';
@@ -15,6 +16,7 @@ var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(StreamUrlController());
+  Get.put(WebSocketController());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   ThemeHelper().changeTheme('primary');
   runApp(ChangeNotifierProvider(

@@ -93,12 +93,12 @@ class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
 
   Widget _buildPersonEntry(BuildContext context, String name, String entryCount) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SinglePerson(name: name)),
-        );
-      },
+      // onTap: () {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => SinglePerson(name: name)),
+      //   );
+      // },
       child: Container(
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(

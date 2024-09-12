@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sriram_s_application3/model/user_login_model.dart';
 
 import '../constants/snack_bar.dart';
@@ -31,5 +32,16 @@ class UserSharedServices {
 
   static bool isLoggedIn() {
     return preferences!.getString("login_details") != null ? true : false;
+  }
+
+
+  static Future<void> saveStreamUrls(List<String> urls) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setStringList('stream_urls', urls);
+  }
+
+  static Future<List<String>> getStreamUrls() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getStringList('stream_urls') ?? [];
   }
 }
