@@ -1,5 +1,4 @@
 // lib/model/camera_detected_users.dart
-
 import 'dart:convert';
 
 CameraDetectedUsers cameraDetectedUsersFromJson(String str) =>
@@ -46,30 +45,67 @@ class DetectedFace {
   int? id;
   int? user;
   String? faceId;
-  String? image;
-  String? lastSeen;
+  double? qualityScore;
+  bool? isKnown;
+  String? dateSeen;
+  int? totalVisits;
+  List<FaceVisit>? faceVisits;
 
   DetectedFace({
     this.id,
     this.user,
     this.faceId,
-    this.image,
-    this.lastSeen,
+    this.qualityScore,
+    this.isKnown,
+    this.dateSeen,
+    this.totalVisits,
+    this.faceVisits,
   });
 
   factory DetectedFace.fromJson(Map<String, dynamic> json) => DetectedFace(
     id: json["id"],
     user: json["user"],
     faceId: json["face_id"],
-    image: json["image"],
-    lastSeen: json["last_seen"],
+    qualityScore: json["quality_score"]?.toDouble(),
+    isKnown: json["is_known"],
+    dateSeen: json["date_seen"],
+    totalVisits: json["total_visits"],
+    faceVisits: json["face_visits"] == null
+        ? []
+        : List<FaceVisit>.from(
+        json["face_visits"]!.map((x) => FaceVisit.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "user": user,
     "face_id": faceId,
+    "quality_score": qualityScore,
+    "is_known": isKnown,
+    "date_seen": dateSeen,
+    "total_visits": totalVisits,
+    "face_visits": faceVisits == null
+        ? []
+        : List<dynamic>.from(faceVisits!.map((x) => x.toJson())),
+  };
+}
+
+class FaceVisit {
+  String? detectedTime;
+  String? image;
+
+  FaceVisit({
+    this.detectedTime,
+    this.image,
+  });
+
+  factory FaceVisit.fromJson(Map<String, dynamic> json) => FaceVisit(
+    detectedTime: json["detected_time"],
+    image: json["image"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "detected_time": detectedTime,
     "image": image,
-    "last_seen": lastSeen,
   };
 }

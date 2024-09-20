@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/app_export.dart';
-import '../../widgets/custom_drop_down.dart';
 import '../../model/camera_user_detected.dart';
 import '../../services/api_service.dart';
 
@@ -17,7 +16,8 @@ class DatabaseScreen extends StatefulWidget {
 class _DatabaseScreenState extends State<DatabaseScreen> {
   final ApiService apiService = ApiService();
   late DateTime selectedDate;
-  List<DetectedFace> detectedFaces = [];
+  CameraDetectedUsers? detectedUsers;
+  bool showKnown = true; // State variable to toggle between known and unknown faces
 
   @override
   void initState() {
@@ -28,47 +28,19 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
 
   Future<void> fetchDetectedFaces() async {
     try {
-      final faces = await apiService.getDetectedFaces(
+      final users = await apiService.getDetectedFaces(
         date: selectedDate.day.toString().padLeft(2, '0'),
         month: selectedDate.month.toString().padLeft(2, '0'),
         year: selectedDate.year.toString(),
       );
       setState(() {
-        detectedFaces = faces.results ?? [];
+        detectedUsers = users;
       });
     } catch (e) {
       print('Error fetching faces: $e');
-      // Consider showing an error message to the user
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000), // Set the earliest date that can be picked
-      lastDate: DateTime.now(),  // Set the latest date that can be picked
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: Colors.orange, // Header background color
-              onPrimary: Colors.black, // Header text color
-              surface: Colors.grey[900]!, // Background color
-              onSurface: Colors.orange, // Text color
-            ),
-            dialogBackgroundColor: Colors.grey[800], // Popup background color
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        fetchDetectedFaces(); // Refresh the detected faces based on the new date
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching faces')),
+      );
     }
   }
 
@@ -77,48 +49,30 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900], // Background color of the AlertDialog
-        title: Text(
-          "Rename Face",
-          style: TextStyle(color: Colors.orange), // Title text color
-        ),
+        backgroundColor: Colors.grey[900],
+        title: Text("Rename Face", style: TextStyle(color: Colors.orange)),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(
             hintText: "Enter new name",
+            hintStyle: TextStyle(color: Colors.white54),
+            fillColor: Colors.grey[800],
             filled: true,
-            hintStyle: TextStyle(color: Colors.white54), // Hint text color
-            fillColor: Colors.grey[800], // Background color of the TextField
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.orange), // Border color
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.blueGrey, width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.blue, width: 2), // Border color when focused
+              borderSide: BorderSide(color: Colors.orange),
             ),
           ),
-          cursorColor: Colors.orange,
-          style: TextStyle(color: Colors.white), // Text color inside TextField
+          style: TextStyle(color: Colors.white),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              "Cancel",
-              style: TextStyle(color: Colors.orange), // Cancel button text color
-            ),
+            child: Text("Cancel", style: TextStyle(color: Colors.orange)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(controller.text),
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.orange), // Save button text color
-            ),
+            child: Text("Save", style: TextStyle(color: Colors.orange)),
           ),
         ],
       ),
@@ -130,7 +84,6 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
           oldFaceId: face.faceId!,
           newFaceId: newName,
         );
-
         if (success) {
           fetchDetectedFaces();
         } else {
@@ -146,12 +99,11 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red, // Optional: Red color for error
-        duration: Duration(seconds: 3), // Optional: Adjust duration
+        backgroundColor: Colors.black,
+        duration: Duration(seconds: 3),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +117,8 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
             SizedBox(height: 22),
             _buildDateSelection(),
             SizedBox(height: 24),
+            _buildToggleButtons(),
+            SizedBox(height: 16),
             _buildDetectedFacesList(),
           ],
         ),
@@ -216,36 +170,158 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: Colors.orange,
+              onPrimary: Colors.black,
+              surface: Colors.grey[900]!,
+              onSurface: Colors.orange,
+            ),
+            dialogBackgroundColor: Colors.grey[800],
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        fetchDetectedFaces();
+      });
+    }
+  }
+
+  Widget _buildToggleButtons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ChoiceChip(
+            label: Text("Known", style: TextStyle(color: Colors.white)),
+            selected: showKnown,
+            onSelected: (selected) {
+              setState(() {
+                showKnown = true;
+              });
+            },
+            selectedColor: Colors.orange,
+            backgroundColor: Colors.grey[800],
+            labelStyle: TextStyle(color: Colors.white),
+          ),
+          SizedBox(width: 16),
+          ChoiceChip(
+            label: Text("Unknown", style: TextStyle(color: Colors.white)),
+            selected: !showKnown,
+            onSelected: (selected) {
+              setState(() {
+                showKnown = false;
+              });
+            },
+            selectedColor: Colors.orange,
+            backgroundColor: Colors.grey[800],
+            labelStyle: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDetectedFacesList() {
+    final faces = detectedUsers?.results?.where((face) =>
+    (showKnown && face.isKnown == true) || (!showKnown && face.isKnown == false)).toList();
+
     return Expanded(
-      child: detectedFaces.isEmpty
+      child: faces == null || faces.isEmpty
           ? Center(child: Text("No detected faces", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)))
           : ListView.builder(
-        itemCount: detectedFaces.length,
+        itemCount: faces.length,
         itemBuilder: (context, index) {
-          final face = detectedFaces[index];
-          return ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            leading: CircleAvatar(
-              backgroundImage: MemoryImage(base64Decode(face.image ?? '')),
-              radius: 30,
+          final face = faces[index];
+          return Card(
+            color: face.isKnown == true ? Colors.grey[850] : Colors.red[900],
+            child: ExpansionTile(
+              leading: CircleAvatar(
+                backgroundImage: MemoryImage(base64Decode(face.faceVisits?.first.image ?? '')),
+                radius: 30,
+              ),
+              title: Text(
+                face.faceId ?? "Unknown",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                "Total visits: ${face.totalVisits ?? 0}",
+                style: TextStyle(color: Colors.grey),
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.edit, color: Colors.white),
+                onPressed: () => _renameFace(face),
+              ),
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Quality Score: ${face.qualityScore?.toStringAsFixed(2) ?? "N/A"}", style: TextStyle(color: Colors.white)),
+                      Text("Is Known: ${face.isKnown == true ? "Yes" : "No"}", style: TextStyle(color: Colors.white)),
+                      SizedBox(height: 16),
+                      Text("Face Visits:", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 8),
+                      _buildFaceVisitsGrid(face.faceVisits),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            title: Text(
-              face.faceId ?? "Unknown",
-              style: TextStyle(color: Colors.white),
-            ),
-            subtitle: Text(
-              face.lastSeen ?? "",
-              style: TextStyle(color: Colors.grey),
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.edit, color: Colors.white),
-              onPressed: () => _renameFace(face),
-            ),
-            tileColor: face.faceId != "unknown" ? Colors.grey[850] : Colors.red[900],
           );
         },
       ),
+    );
+  }
+
+  Widget _buildFaceVisitsGrid(List<FaceVisit>? faceVisits) {
+    if (faceVisits == null || faceVisits.isEmpty) {
+      return Text("No visits recorded", style: TextStyle(color: Colors.grey));
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: faceVisits.length,
+      itemBuilder: (context, index) {
+        final visit = faceVisits[index];
+        return Column(
+          children: [
+            Expanded(
+              child: Image.memory(
+                base64Decode(visit.image ?? ''),
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              visit.detectedTime ?? "Unknown",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        );
+      },
     );
   }
 }

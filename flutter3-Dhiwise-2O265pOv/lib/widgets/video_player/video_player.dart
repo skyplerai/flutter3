@@ -15,13 +15,13 @@ class WebSocketController extends GetxController {
   Timer? _reconnectTimer;
   bool _isDisposed = false;
 
-  void initialize(String webSocketUrl, String authToken) {
+  Future<void> initialize(String webSocketUrl, String authToken) async {
     _webSocketUrl = webSocketUrl;
     _authToken = authToken;
-    _connectWebSocket();
+    await _connectWebSocket();
   }
 
-  void _connectWebSocket() {
+  Future<void> _connectWebSocket() async {
     if (_isDisposed) return;
     final wsUrl = '$_webSocketUrl?token=$_authToken';
     print('Connecting WebSocket with URL: $wsUrl');
@@ -119,41 +119,47 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
   }
 
   void _initializeController() {
-    _controller = Get.put(WebSocketController(), tag: widget.webSocketUrl);
-    _controller!.initialize(widget.webSocketUrl, widget.authToken);
+    _controller = Get.put(
+      WebSocketController(),
+      tag: widget.webSocketUrl,
+      permanent: true,
+    );
+    _controller?.initialize(widget.webSocketUrl, widget.authToken);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    return Obx(() => Container(
-      width: double.infinity,
-      height: 240,
-      child: Center(
-        child: _controller!.isError.value
-            ? _buildErrorWidget()
-            : _controller!.currentFrame.value != null
-            ? _buildVideoWidget()
-            : CircularProgressIndicator(),
-      ),
-    ));
+    return Obx(() {
+      final controller = _controller;
+      if (controller == null) {
+        return Center(child: CircularProgressIndicator());
+      }
+      return Container(
+        width: double.infinity,
+        height: 240,
+        child: Center(
+          child: controller.isError.value
+              ? _buildErrorWidget(controller)
+              : controller.currentFrame.value != null
+              ? _buildVideoWidget(controller)
+              : CircularProgressIndicator(),
+        ),
+      );
+    });
   }
 
-  Widget _buildErrorWidget() {
+  Widget _buildErrorWidget(WebSocketController controller) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Error: ${_controller!.errorMessage.value}',
+          'Error: ${controller.errorMessage.value}',
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white),
         ),
         SizedBox(height: 10),
         ElevatedButton(
-          onPressed: _controller!.reconnect,
+          onPressed: controller.reconnect,
           child: Text('Retry'),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
@@ -163,14 +169,14 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
     );
   }
 
-  Widget _buildVideoWidget() {
+  Widget _buildVideoWidget(WebSocketController controller) {
     return Stack(
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: _controller!.currentFrame.value!,
+          child: controller.currentFrame.value!,
         ),
-        ..._controller!.detectedFaces.map(_buildFaceDetectionBox).toList(),
+        ...controller.detectedFaces.map(_buildFaceDetectionBox).toList(),
       ],
     );
   }
@@ -192,9 +198,9 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
 
   @override
   void dispose() {
-    final controller = Get.find<WebSocketController>(tag: widget.webSocketUrl);
-    controller.onClose();
-    Get.delete<WebSocketController>(tag: widget.webSocketUrl);
+    if (_controller != null) {
+      Get.delete<WebSocketController>(tag: widget.webSocketUrl);
+    }
     super.dispose();
   }
 }

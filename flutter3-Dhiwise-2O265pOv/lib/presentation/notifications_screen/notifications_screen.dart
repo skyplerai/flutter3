@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
-import '../../Services/api_service.dart';
-import '../../model/notification_logs.dart'; // Notification log model
+import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../model/notification_logs.dart'; // Assuming this model still exists
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -15,25 +12,51 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  late Future<NotificationLogResponse?> _notificationsFuture;
-  List<NotificationLog>? _notifications = [];
+  List<NotificationLog> _notifications = [];
   bool _hasNewNotification = false;
+  late WebSocketChannel _channel;
 
   @override
   void initState() {
     super.initState();
-    _notificationsFuture = _fetchNotifications();
+    _connectWebSocket();
   }
 
-  Future<NotificationLogResponse?> _fetchNotifications() async {
-    final response = await ApiService().fetchNotificationLogs();
-    if (response != null && response.results!.isNotEmpty) {
-      setState(() {
-        _notifications = response.results;
-        _hasNewNotification = true; // New notification logic
-      });
-    }
-    return response;
+  void _connectWebSocket() {
+    _channel = WebSocketChannel.connect(
+      Uri.parse('ws://your-websocket-server-url/ws/camera/<stream_id>/'),
+    );
+
+    _channel.stream.listen((message) {
+      _handleRealTimeNotification(message);
+    }, onError: (error) {
+      print('WebSocket error: $error');
+    }, onDone: () {
+      print('WebSocket connection closed');
+    });
+  }
+
+  void _handleRealTimeNotification(String message) {
+    final data = jsonDecode(message);
+    final newNotification = NotificationLog(
+      faceId: data['face_id'],
+      cameraName: data['camera_name'],
+      detectedTime: data['detected_time'],
+      imageData: data['image_data'],
+    );
+
+    setState(() {
+      _notifications.insert(0, newNotification); // Add to the beginning of the list
+      _hasNewNotification = true;
+    });
+
+    _showNewNotificationSnackbar(newNotification);
+  }
+
+  @override
+  void dispose() {
+    _channel.sink.close();
+    super.dispose();
   }
 
   void _showNewNotificationSnackbar(NotificationLog log) {
@@ -66,9 +89,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
               SizedBox(height: 15),
-              SizedBox(height: 10),
               Expanded(child: _buildNotificationList()),
             ],
           ),
@@ -77,7 +98,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ? FloatingActionButton(
           backgroundColor: Colors.orange,
           onPressed: () {
-            _showNewNotificationSnackbar(_notifications!.last);
+            _showNewNotificationSnackbar(_notifications.first);
           },
           child: Icon(Icons.notifications_active),
         )
@@ -88,81 +109,42 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text('Notifications'),
-      backgroundColor: Colors.orange,
+      title: Text('Notifications', style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.transparent,
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios),
+        color: Colors.white,
         onPressed: () => Navigator.pop(context),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 12.0),
-      child: Text(
-        "Notifications",
-        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Colors.orange,
-        ),
-      ),
-    );
-  }
-
-
 
 
   Widget _buildNotificationList() {
-    return FutureBuilder<NotificationLogResponse?>(
-      future: _notificationsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("Error loading notifications"));
-        }
-
-        if (_notifications == null || _notifications!.isEmpty) {
-          return Center(child: Text("No notifications found"));
-        }
-
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
-          itemCount: _notifications!.length,
-          itemBuilder: (context, index) {
-            final notification = _notifications![index];
-            return _buildNotificationTile(notification);
-          },
-        );
+    return _notifications.isEmpty
+        ? Center(child: Text("No notifications yet"))
+        : ListView.builder(
+      itemCount: _notifications.length,
+      itemBuilder: (context, index) {
+        return _buildNotificationTile(_notifications[index]);
       },
     );
   }
 
   String formatDateAndIndianTime(String timestamp) {
     DateTime dateTime = DateTime.parse(timestamp);
-
-    // Add 5 hours to the time
-    dateTime = dateTime.add(Duration(hours: 5));
-
-    // Format date and Indian time
-    String formattedOutput = DateFormat('yyyy-MM-dd hh:mm:ss a').format(dateTime);
-
-    return formattedOutput;
+    dateTime = dateTime.add(Duration(hours: 5, minutes: 30)); // IST is UTC+5:30
+    return DateFormat('yyyy-MM-dd hh:mm:ss a').format(dateTime);
   }
 
-
   Widget _buildNotificationTile(NotificationLog notification) {
-    // Format the detected time
     final formattedTime = formatDateAndIndianTime(notification.detectedTime!);
-    ;
     return ListTile(
       contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       leading: CircleAvatar(
         radius: 35,
-        backgroundImage: MemoryImage(base64Decode(notification.imageData ?? '')), // Default image if null or empty
+        backgroundImage: MemoryImage(base64Decode(notification.imageData ?? '')),
       ),
       title: Text(
         "Face detected: ${notification.faceId}",
@@ -173,7 +155,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ),
       ),
       subtitle: Text(
-        "Detected at ${notification.cameraName} on ${formattedTime}",
+        "Detected at ${notification.cameraName} on $formattedTime",
         style: TextStyle(color: Colors.grey[600]),
       ),
       trailing: Icon(Icons.chevron_right, color: Colors.grey),
