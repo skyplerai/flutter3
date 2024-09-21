@@ -186,8 +186,10 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
       left: face['coordinates']?['left']?.toDouble() ?? 0,
       top: face['coordinates']?['top']?.toDouble() ?? 0,
       child: Container(
-        width: ((face['coordinates']?['right'] ?? 0) - (face['coordinates']?['left'] ?? 0)).toDouble(),
-        height: ((face['coordinates']?['bottom'] ?? 0) - (face['coordinates']?['top'] ?? 0)).toDouble(),
+        width: ((face['coordinates']?['right'] ?? 0) -
+            (face['coordinates']?['left'] ?? 0)).toDouble(),
+        height: ((face['coordinates']?['bottom'] ?? 0) -
+            (face['coordinates']?['top'] ?? 0)).toDouble(),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.red, width: 2),
         ),
@@ -195,12 +197,7 @@ class _WebSocketVideoPlayerState extends State<WebSocketVideoPlayer> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    if (_controller != null) {
-      Get.delete<WebSocketController>(tag: widget.webSocketUrl);
-    }
-    super.dispose();
-  }
 }
+
+// No dispose() method needed if you don't want to clean up the WebSocket
+

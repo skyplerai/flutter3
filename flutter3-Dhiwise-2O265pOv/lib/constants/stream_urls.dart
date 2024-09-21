@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 import '../services/api_service.dart';
-import '../services/shared_services.dart';
-import '../model/stream_urls.dart';
 import '../widgets/video_player/video_player.dart';
 
 class StreamUrlController extends GetxController {
@@ -21,20 +19,18 @@ class StreamUrlController extends GetxController {
 
   Future<void> getAllTheUrls() async {
     try {
-      final savedUrls = await UserSharedServices.getStreamUrls();
-      if(savedUrls.isNotEmpty){
-        streamUrls.assignAll(savedUrls);
-      } else {
-        final staticUrlsResponse = await apiService.getStreamUrl("static");
-        final ddnsUrlsResponse = await apiService.getStreamUrl("ddns");
-        final staticUrls = (staticUrlsResponse.streamUrls ?? []).cast<String>();
-        final ddnsUrls = (ddnsUrlsResponse.streamUrls ?? []).cast<String>();
-        streamUrls.addAll(staticUrls);
-        streamUrls.addAll(ddnsUrls);
-      }
+      // Fetch URLs directly from the backend
+      final staticUrlsResponse = await apiService.getStreamUrl("static");
+      final ddnsUrlsResponse = await apiService.getStreamUrl("ddns");
+
+      // Combine static and DDNS URLs
+      final staticUrls = (staticUrlsResponse.streamUrls ?? []).cast<String>();
+      final ddnsUrls = (ddnsUrlsResponse.streamUrls ?? []).cast<String>();
+
+      streamUrls.addAll(staticUrls);
+      streamUrls.addAll(ddnsUrls);
+
       print("streamUrls: $streamUrls");
-      // Save the updated streamUrls to shared preferences
-      await UserSharedServices.saveStreamUrls(streamUrls);
     } catch (e) {
       print("Error fetching stream URLs: $e");
     }
@@ -53,7 +49,6 @@ class StreamUrlController extends GetxController {
   Future<void> addNewStream(String url) async {
     if (!streamUrls.contains(url)) {
       streamUrls.add(url);
-      await UserSharedServices.saveStreamUrls(streamUrls);
       connectToStream(url);
     }
   }

@@ -1,59 +1,57 @@
-// lib/models/face_data.dart
-
-class FaceCount {
-  final String faceId;
-  final int count;
-
-  FaceCount({
-    required this.faceId,
-    required this.count,
-  });
-
-  factory FaceCount.fromJson(Map<String, dynamic> json) {
-    return FaceCount(
-      faceId: json['face_id'],
-      count: json['count'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'face_id': faceId,
-      'count': count,
-    };
-  }
-}
-
 class FaceData {
+  final String date;
   final int totalFaces;
   final int knownFaces;
   final int unknownFaces;
-  final List<FaceCount> faceCounts;
+  final int knownFacesToday;
+  final int knownFacesWeek;
+  final int knownFacesMonth;
+  final int knownFacesYear;
+  final Map<String, int> faceCount;
 
   FaceData({
+    required this.date,
     required this.totalFaces,
     required this.knownFaces,
     required this.unknownFaces,
-    required this.faceCounts,
+    required this.knownFacesToday,
+    required this.knownFacesWeek,
+    required this.knownFacesMonth,
+    required this.knownFacesYear,
+    required this.faceCount,
   });
 
   factory FaceData.fromJson(Map<String, dynamic> json) {
+    // Parse the facecount field safely
+    Map<String, int> parsedFaceCount = {};
+    if (json['facecount'] != null) {
+      parsedFaceCount = Map<String, int>.from(json['facecount']);
+    }
+
     return FaceData(
+      date: json['date'],
       totalFaces: json['total_faces'],
       knownFaces: json['known_faces'],
       unknownFaces: json['unknown_faces'],
-      faceCounts: (json['face_counts'] as List)
-          .map((face) => FaceCount.fromJson(face))
-          .toList(),
+      knownFacesToday: json['known_faces_today'],
+      knownFacesWeek: json['known_faces_week'],
+      knownFacesMonth: json['known_faces_month'],
+      knownFacesYear: json['known_faces_year'],
+      faceCount: parsedFaceCount,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'date': date,
       'total_faces': totalFaces,
       'known_faces': knownFaces,
       'unknown_faces': unknownFaces,
-      'face_counts': faceCounts.map((face) => face.toJson()).toList(),
+      'known_faces_today': knownFacesToday,
+      'known_faces_week': knownFacesWeek,
+      'known_faces_month': knownFacesMonth,
+      'known_faces_year': knownFacesYear,
+      'facecount': faceCount,
     };
   }
 }

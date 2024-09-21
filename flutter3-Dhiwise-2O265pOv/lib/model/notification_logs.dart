@@ -42,7 +42,7 @@ class NotificationLog {
   String? cameraName;
   String? detectedTime;
   bool? notificationSent;
-  String? imageData;
+  String? image;
 
   NotificationLog({
     this.user,
@@ -50,7 +50,7 @@ class NotificationLog {
     this.cameraName,
     this.detectedTime,
     this.notificationSent,
-    this.imageData,
+    this.image,
   });
 
   factory NotificationLog.fromJson(Map<String, dynamic> json) => NotificationLog(
@@ -59,7 +59,7 @@ class NotificationLog {
     cameraName: json["camera_name"],
     detectedTime: json["detected_time"],
     notificationSent: json["notification_sent"],
-    imageData: json["image_data"],
+    image: json["image"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -68,6 +68,6 @@ class NotificationLog {
     "camera_name": cameraName,
     "detected_time": detectedTime,
     "notification_sent": notificationSent,
-    "image_data": imageData,
+    "image": image,
   };
 }

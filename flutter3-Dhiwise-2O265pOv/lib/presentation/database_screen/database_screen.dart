@@ -49,7 +49,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.black,
         title: Text("Rename Face", style: TextStyle(color: Colors.orange)),
         content: TextField(
           controller: controller,
@@ -248,7 +248,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
         itemBuilder: (context, index) {
           final face = faces[index];
           return Card(
-            color: face.isKnown == true ? Colors.grey[850] : Colors.red[900],
+            color: face.isKnown == true ? Colors.orange[500]: Colors.red[900],
             child: ExpansionTile(
               leading: CircleAvatar(
                 backgroundImage: MemoryImage(base64Decode(face.faceVisits?.first.image ?? '')),
@@ -260,7 +260,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
               ),
               subtitle: Text(
                 "Total visits: ${face.totalVisits ?? 0}",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
               ),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.white),
@@ -272,9 +272,6 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Quality Score: ${face.qualityScore?.toStringAsFixed(2) ?? "N/A"}", style: TextStyle(color: Colors.white)),
-                      Text("Is Known: ${face.isKnown == true ? "Yes" : "No"}", style: TextStyle(color: Colors.white)),
-                      SizedBox(height: 16),
                       Text("Face Visits:", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
                       _buildFaceVisitsGrid(face.faceVisits),

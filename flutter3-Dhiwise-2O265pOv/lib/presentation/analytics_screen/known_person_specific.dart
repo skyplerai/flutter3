@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sriram_s_application3/core/app_export.dart';
-import 'single_person.dart';
 import '../../model/face_data.dart';
 import '../../services/api_service.dart';
 
@@ -10,44 +9,45 @@ class KnownPersonSpecific extends StatefulWidget {
 }
 
 class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
-  late Future<List<FaceCount>> _futureKnownFaces;
+  late Future<FaceData> _futureFaceData;
 
   @override
   void initState() {
     super.initState();
-    _futureKnownFaces = _fetchKnownFaces();
+    _futureFaceData = _fetchKnownFaces();
   }
 
-  Future<List<FaceCount>> _fetchKnownFaces() async {
+  Future<FaceData> _fetchKnownFaces() async {
     final apiService = ApiService();
     final faceData = await apiService.getFaceAnalytics();
-    // Filter out only known faces (excluding any face with "unknown" in faceId)
-    return faceData.faceCounts.where((face) => !face.faceId.startsWith("unknown")).toList();
+    return faceData; // Directly return the FaceData object
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FaceCount>>(
-      future: _futureKnownFaces,
+    return FutureBuilder<FaceData>(
+      future: _futureFaceData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(
-            color: Colors.orange,
-          ));
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.orange,
+            ),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (!snapshot.hasData) {
           return Center(
             child: Container(
-              margin: EdgeInsets.all(20), // Margin around the container
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Padding inside the container
+              margin: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               decoration: BoxDecoration(
-                color: Colors.grey[850], // Background color of the container
-                borderRadius: BorderRadius.circular(10), // Rounded corners
+                color: Colors.grey[850],
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                'There are no known faces available here',
-                textAlign: TextAlign.center, // Center align text
+                'No face data available',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -57,16 +57,13 @@ class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
             ),
           );
         } else {
-          final knownFaces = snapshot.data!;
+          final faceData = snapshot.data!;
+          final knownFacesCount = faceData.knownFaces;
+          final faceCountMap = faceData.faceCount;
+
           return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15.h,
-              vertical: 20.v,
-            ),
-            margin: EdgeInsets.symmetric(
-              horizontal: 20.h,
-              vertical: 20.v,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             decoration: AppDecoration.fillBlueGray.copyWith(
               borderRadius: BorderRadiusStyle.roundedBorder27,
             ),
@@ -74,7 +71,7 @@ class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Known peoples:-",
+                  "Known people count: $knownFacesCount",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -82,7 +79,25 @@ class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
                   ),
                 ),
                 SizedBox(height: 15),
-                ...knownFaces.map((face) => _buildPersonEntry(context, face.faceId, face.count.toString())).toList(),
+                if (knownFacesCount > 0) ...[
+                  // Iterating over the faceCount map to display each person
+                  for (var entry in faceCountMap.entries)
+                    _buildPersonEntry(
+                      context,
+                      entry.key, // Person's name
+                      entry.value.toString(), // Person's count
+                    ),
+                ] else ...[
+                  Center(
+                    child: Text(
+                      "There are no known faces available here.",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           );
@@ -93,13 +108,8 @@ class _KnownPersonSpecificState extends State<KnownPersonSpecific> {
 
   Widget _buildPersonEntry(BuildContext context, String name, String entryCount) {
     return GestureDetector(
-      // onTap: () {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => SinglePerson(name: name)),
-      //   );
-      // },
       child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.grey[850],

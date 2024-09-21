@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sriram_s_application3/model/user_login_model.dart';
 import 'package:sriram_s_application3/presentation/authentication/verify_email/verify_email.dart';
 import 'package:sriram_s_application3/presentation/dashboard/dashboard.dart';
 import 'package:sriram_s_application3/presentation/splash_screen/splash_screen.dart';
+import 'package:sriram_s_application3/core/app_export.dart'; // Assuming this contains necessary imports
 
 import '../constants/connect_cctv_screen.dart';
 import '../presentation/analytics_screen/analytics_screen.dart';
@@ -22,38 +24,25 @@ import '../presentation/ip_address_screen/ip_address_screen.dart';
 import '../presentation/notifications_screen/notifications_screen.dart';
 import '../presentation/pricing_screen/pricing_screen.dart';
 import '../presentation/settings_screen/settings_screen.dart';
-import '../presentation/static_screen/static_screen.dart'; // ignore_for_file: must_be_immutable
+import '../presentation/static_screen/static_screen.dart';
 
 // ignore_for_file: must_be_immutable
 class AppRoutes {
   static const String homePageOneScreen = '/home_page_one_screen';
-
   static const String homePageTwoScreen = '/home_page_two_screen';
-
   static const String databaseScreen = '/database_screen';
-
   static const String analyticsScreen = '/analytics_screen';
-
   static const String notificationsScreen = '/notifications_screen';
-
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String loginScreen = '/login_screen';
-
   static const String createAccountScreen = '/create_account_screen';
-
   static const String connectCctvScreen = '/connect_cctv_screen';
-
   static const String staticScreen = '/static_screen';
-
   static const String ddnsScreen = '/ddns_screen';
-
   static const String initialRoute = '/initialRoute';
   static const String frameOneScreen = '/frame_one_screen';
-
   static const String settingsScreen = '/settings_screen';
-
   static const String pricingScreen = '/pricing_screen';
-
   static const String ipAddressScreen = '/ip_address_screen';
   static const String verifyEmail = '/verifyEmail';
   static const String documentationScreen = '/documentation_screen';
@@ -63,17 +52,19 @@ class AppRoutes {
   static const String authWrapperScreen = '/authWrapper';
   static const String forgotPassword = '/forgotPassword';
   static const String splashscreen = '/splashscreen';
+
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => LoginScreen(),
     createAccountScreen: (context) => CreateAccountScreen(),
     connectCctvScreen: (context) => ConnectCctvScreen(),
-    staticScreen: (context) => StaticScreen(onStreamAdded: (url) {  },),
+    staticScreen: (context) => StaticScreen(onStreamAdded: (url) {}),
     ddnsScreen: (context) => DdnsScreen(),
     homePageOneScreen: (context) => HomePageOneScreen(),
     homePageTwoScreen: (context) => HomePageTwoScreen(),
     databaseScreen: (context) => DatabaseScreen(),
     analyticsScreen: (context) => AnalyticsScreen(),
-    notificationsScreen: (context) => NotificationsScreen(),
+    notificationsScreen: (context) => NotificationsScreen(
+    ),
     frameOneScreen: (context) => FrameOneScreen(),
     settingsScreen: (context) => SettingsScreen(),
     pricingScreen: (context) => PricingScreen(),
@@ -82,7 +73,6 @@ class AppRoutes {
     appNavigationScreen: (context) => AppNavigationScreen(),
     dashboardScreen: (context) => DashBoardScreen(),
     splashscreen: (context) => SplashScreen(),
-    // initialRoute: (context) => LoginScreen(),
     faqScreen: (context) => FAQScreen(),
     helpAndSupport: (context) => HelpAndSupportScreen(),
     authWrapperScreen: (context) => AuthWrapper(),

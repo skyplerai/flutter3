@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import '../../model/notification_logs.dart'; // Assuming this model still exists
+
+import '../../Services/api_service.dart';
+import '../../model/notification_logs.dart'; // Notification log model
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -12,68 +14,45 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  List<NotificationLog> _notifications = [];
+  late Future<NotificationLogResponse?> _notificationsFuture;
+  List<NotificationLog>? _notifications = [];
   bool _hasNewNotification = false;
-  late WebSocketChannel _channel;
 
   @override
   void initState() {
     super.initState();
-    _connectWebSocket();
+    _notificationsFuture = _fetchNotifications();
   }
 
-  void _connectWebSocket() {
-    _channel = WebSocketChannel.connect(
-      Uri.parse('ws://your-websocket-server-url/ws/camera/<stream_id>/'),
-    );
-
-    _channel.stream.listen((message) {
-      _handleRealTimeNotification(message);
-    }, onError: (error) {
-      print('WebSocket error: $error');
-    }, onDone: () {
-      print('WebSocket connection closed');
-    });
-  }
-
-  void _handleRealTimeNotification(String message) {
-    final data = jsonDecode(message);
-    final newNotification = NotificationLog(
-      faceId: data['face_id'],
-      cameraName: data['camera_name'],
-      detectedTime: data['detected_time'],
-      imageData: data['image_data'],
-    );
-
-    setState(() {
-      _notifications.insert(0, newNotification); // Add to the beginning of the list
-      _hasNewNotification = true;
-    });
-
-    _showNewNotificationSnackbar(newNotification);
-  }
-
-  @override
-  void dispose() {
-    _channel.sink.close();
-    super.dispose();
+  Future<NotificationLogResponse?> _fetchNotifications() async {
+    // Fetch notifications from API
+    final response = await ApiService().fetchNotificationLogs();
+    if (response != null && response.results!.isNotEmpty) {
+      setState(() {
+        _notifications = response.results;
+        _hasNewNotification = true; // Mark new notification as received
+      });
+    }
+    return response;
   }
 
   void _showNewNotificationSnackbar(NotificationLog log) {
     final snackBar = SnackBar(
       content: Text(
-        "New face detected: ${log.faceId} in ${log.cameraName}",
-        style: TextStyle(fontSize: 16, color: Colors.white),
+        "New face detected: ${log.faceId} at ${log.cameraName}",
+        style: const TextStyle(fontSize: 16, color: Colors.white),
+
       ),
       action: SnackBarAction(
         label: 'View',
         textColor: Colors.orange,
         onPressed: () {
-          // Navigate to database or details screen
+          // Handle action on viewing detailed notification
+          print(log.image);
         },
       ),
       backgroundColor: Colors.grey[800],
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -82,14 +61,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _buildAppBar(context),
+        appBar: _buildAppBar(),
         body: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 15),
+              _buildHeader(),
+              const SizedBox(height: 15),
               Expanded(child: _buildNotificationList()),
             ],
           ),
@@ -98,70 +78,121 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ? FloatingActionButton(
           backgroundColor: Colors.orange,
           onPressed: () {
-            _showNewNotificationSnackbar(_notifications.first);
+            _showNewNotificationSnackbar(_notifications!.last);
           },
-          child: Icon(Icons.notifications_active),
+          child: const Icon(Icons.notifications_active),
         )
             : null,
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar() {
     return AppBar(
-      title: Text('Notifications', style: TextStyle(color: Colors.white)),
-      backgroundColor: Colors.transparent,
+      title: const Text('Notifications'),
+      backgroundColor: Colors.orange,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        color: Colors.white,
+        icon: const Icon(Icons.arrow_back_ios),
         onPressed: () => Navigator.pop(context),
       ),
     );
   }
 
-
-
-  Widget _buildNotificationList() {
-    return _notifications.isEmpty
-        ? Center(child: Text("No notifications yet"))
-        : ListView.builder(
-      itemCount: _notifications.length,
-      itemBuilder: (context, index) {
-        return _buildNotificationTile(_notifications[index]);
-      },
-    );
-  }
-
-  String formatDateAndIndianTime(String timestamp) {
-    DateTime dateTime = DateTime.parse(timestamp);
-    dateTime = dateTime.add(Duration(hours: 5, minutes: 30)); // IST is UTC+5:30
-    return DateFormat('yyyy-MM-dd hh:mm:ss a').format(dateTime);
-  }
-
-  Widget _buildNotificationTile(NotificationLog notification) {
-    final formattedTime = formatDateAndIndianTime(notification.detectedTime!);
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      leading: CircleAvatar(
-        radius: 35,
-        backgroundImage: MemoryImage(base64Decode(notification.imageData ?? '')),
-      ),
-      title: Text(
-        "Face detected: ${notification.faceId}",
+  Widget _buildHeader() {
+    return const Padding(
+      padding: EdgeInsets.only(left: 12.0),
+      child: Text(
+        "Notifications",
         style: TextStyle(
-          fontSize: 18,
           fontWeight: FontWeight.bold,
+          fontSize: 24,
           color: Colors.orange,
         ),
       ),
-      subtitle: Text(
-        "Detected at ${notification.cameraName} on $formattedTime",
-        style: TextStyle(color: Colors.grey[600]),
-      ),
-      trailing: Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: () {
-        // Navigate to a detail screen
+    );
+  }
+
+  Widget _buildNotificationList() {
+    return FutureBuilder<NotificationLogResponse?>(
+      future: _notificationsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text("Error loading notifications"));
+        }
+        if (_notifications == null || _notifications!.isEmpty) {
+          return const Center(child: Text("No notifications found"));
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          itemCount: _notifications!.length,
+          itemBuilder: (context, index) {
+            final notification = _notifications![index];
+            return _buildNotificationTile(notification);
+          },
+        );
       },
     );
   }
+
+  // Format detected timestamp
+  String _formatDateAndTime(String timestamp) {
+    // Define input and output formats
+    DateFormat inputFormat = DateFormat('hh:mm a, yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd hh:mm:ss a');
+
+    try {
+      DateTime dateTime = inputFormat.parse(timestamp); // Parse input
+      return outputFormat.format(dateTime); // Return formatted date
+    } catch (e) {
+      print('Error parsing date: $e');
+      return 'Invalid date';
+    }
+  }
+
+  Widget _buildNotificationTile(NotificationLog notification) {
+    final formattedTime = _formatDateAndTime(notification.detectedTime!);
+
+    Uint8List? imageData;
+    if (notification.image != null && notification.image!.isNotEmpty) {
+      try {
+        // Trim any whitespace and remove any potential line breaks
+        String cleanedBase64 = notification.image!.trim().replaceAll(RegExp(r'\s+'), '');
+        imageData = base64Decode(cleanedBase64);
+      } catch (e) {
+        print('Error decoding base64 image: $e');
+        imageData = null;
+      }
+    }
+
+    return ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        leading: CircleAvatar(
+          radius: 35,
+          backgroundColor: Colors.transparent,
+          backgroundImage: imageData != null
+              ? MemoryImage(imageData)
+              : const AssetImage('assets/images/logo.png') as ImageProvider,
+        ),
+        title: Text(
+          "Face detected: ${notification.faceId}",
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange,
+          ),
+        ),
+        subtitle: Text(
+          "Detected at ${notification.cameraName} on $formattedTime",
+          style: TextStyle(color: Colors.grey[600]),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+        onTap: () {
+          // Handle on tap
+          },
+        );
+   }
 }

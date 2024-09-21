@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'Line_graph.dart';
+
 
 class SinglePerson extends StatefulWidget {
   final String name;
@@ -55,12 +55,7 @@ class _SinglePersonState extends State<SinglePerson> {
               ),
             ),
             SizedBox(height: 20), // Vertical gap between period buttons and chart
-            EntriesLineChart(
-              entriesPerDay: entries,
-              width: 350, // Custom width
-              height: 250, // Custom height
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Custom margin
-            ),
+
             SizedBox(height: 16), // Spacing between the chart and the label
             ShaderMask(
               shaderCallback: (bounds) => LinearGradient(
