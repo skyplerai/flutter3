@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../widgets/video_player/video_player.dart';
-import '../services/api_service.dart';
+import '../Services/websocket_connection.dart';
+import '../widgets/video_player/video_player.dart'; // WebSocketVideoPlayer widget
+import '../services/api_service.dart'; // Import the separated WebSocket connection widget
 
 class CameraStreamScreen extends StatelessWidget {
   final String webSocketUrl;
@@ -25,7 +26,7 @@ class CameraStreamScreen extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: GetBuilder<WebSocketController>(
+            child: GetBuilder<WebSocketConnection>( // Changed to WebSocketConnection
               tag: webSocketUrl,
               builder: (controller) {
                 return ListView.builder(
@@ -50,7 +51,7 @@ class CameraStreamScreen extends StatelessWidget {
     );
   }
 
-  void _renameFace(Map<String, dynamic> face, WebSocketController controller) async {
+  void _renameFace(Map<String, dynamic> face, WebSocketConnection controller) async { // Updated to WebSocketConnection
     final newName = await Get.dialog<String>(
       AlertDialog(
         title: Text('Rename Face'),
